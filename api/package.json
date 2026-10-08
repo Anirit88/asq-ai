@@ -1,0 +1,11 @@
+{
+  "name": "asqai-api",
+  "version": "2.0.0",
+  "private": true,
+  "main": "src/functions/*.js",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@azure/functions": "^4.5.0",
+    "@azure/storage-blob": "^12.24.0"
+  }
+}
