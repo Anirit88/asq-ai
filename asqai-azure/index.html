@@ -1597,6 +1597,24 @@ body,.app{background:#EDEEEB}
 .kiosk.k-bigtext .k-h{font-size:52px}.kiosk.k-bigtext .k-sub{font-size:22px}.kiosk.k-bigtext .k-inp{height:68px;font-size:22px}.kiosk.k-bigtext .k-big b{font-size:26px}.kiosk.k-bigtext .field{font-size:17px}
 .kiosk{z-index:120}
 .tmap .pin.place .pin-h{background:#334155!important}.tmap .pin.hosp .pin-h{background:#B91C1C!important}
+
+/* login preview: reel + glass card (matches login.html v3) */
+.lpv{display:block;position:relative;min-height:360px;border:0;background:radial-gradient(120% 90% at 65% 35%,#173A86 0%,#0C2257 45%,#050C22 100%);color:#fff}
+.lpv::before{content:'';position:absolute;left:46%;right:0;top:62%;height:1px;background:linear-gradient(90deg,transparent,rgba(170,205,255,.6),transparent)}
+.lpv::after{content:'';position:absolute;left:70%;top:62%;width:70px;height:70px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,#fff,rgba(120,170,255,.35),transparent)}
+.lpv-side{position:absolute;inset:0;padding:22px 20px 20px 50%;background:none!important;justify-content:flex-start;align-items:center;text-align:center;gap:6px}
+.lpv-side .lpv-cl{margin-bottom:0}
+.lpv-side .lpv-wm{display:none}
+.lpv-h{margin-top:18px;font-weight:500;font-size:17px}
+.lpv-b{display:none}
+.lpv-main{position:absolute;left:12px;bottom:12px;width:44%;background:linear-gradient(160deg,rgba(40,70,150,.55),rgba(14,30,80,.6));border:1px solid rgba(180,205,255,.25);border-radius:12px;padding:12px;gap:5px;z-index:1;color:#fff}
+.lpv-main .lpv-t{color:#fff;font-size:13px}
+.lpv-pill{background:rgba(255,255,255,.08);border-color:rgba(180,205,255,.2);color:#DCE7FF}
+.lpv-tabs{background:rgba(0,0,0,.25);color:#9DB0D6}.lpv-tabs span.on{background:rgba(255,255,255,.14);color:#fff}
+.lpv-in{background:rgba(4,12,36,.5);border-color:rgba(180,205,255,.22);color:#6F84B3;height:22px}
+.lpv-sso{background:rgba(255,255,255,.06);border-color:rgba(180,205,255,.22);color:#fff;height:22px}
+.lpv-or{color:#5E739E}
+.lpv-btn{height:24px}
 </style>
 </helmet>
 <div class="app">
@@ -3853,7 +3871,7 @@ class Component extends DCLogic {
       location.replace(path === '/kiosk' ? '/doctor?next=/kiosk' + (reason ? '&' + reason : '') : '/login' + (reason ? '?' + reason : ''));
       return;
     }
-    if (!me.ok) { this.setState((s) => ({ cloud: Object.assign({}, s.cloud, { on: true, status: 'offline' }) })); this.toast('Could not reach the server. Working offline for now.'); return; }
+    if (!me.ok) { this.setState({ apiDown: me.status === 404 ? 'missing' : 'error' }); return; }
     const user = me.data.user; const via = me.data.via;
     if (user.mustChange && via === 'password') { location.replace((user.role === 'patient' ? '/patient' : '/doctor') + '?next=' + encodeURIComponent(path || '/')); return; }
     const roles = user.role === 'admin' ? ['patient', 'doctor', 'admin'] : user.role === 'kiosk' ? [] : [user.role];
@@ -3920,7 +3938,7 @@ class Component extends DCLogic {
     const s = this.state;
     const P = this.pick(this.personalKeys(), s), Cc = this.pick(this.clinicKeys(), s);
     const lp = this.lastP || {}, lc = this.lastC || {};
-    if (this.personalKeys().some(function (k) { return P[k] !== lp[k]; }) && this.state.cloud.user.role !== 'kiosk') { this.lastP = P; clearTimeout(this.cT1); this.cT1 = setTimeout(() => this.cloudSave('p'), 1200); }
+    if (this.personalKeys().some(function (k) { return P[k] !== lp[k]; }) && this.state.cloud.user && this.state.cloud.user.role !== 'kiosk') { this.lastP = P; clearTimeout(this.cT1); this.cT1 = setTimeout(() => this.cloudSave('p'), 1200); }
     if (this.clinicKeys().some(function (k) { return Cc[k] !== lc[k]; })) { this.lastC = Cc; clearTimeout(this.cT2); this.cT2 = setTimeout(() => { this.cT2 = null; this.cloudSave('c'); }, 1500); }
   }
   async cloudSave(kind) {
@@ -4020,7 +4038,7 @@ class Component extends DCLogic {
     this.toast('Saved ' + (f.first + ' ' + f.last).trim());
   }
   adminGuard(target, patch) {
-    const meId = this.state.cloud.on ? this.state.cloud.user.id : 'u1';
+    const meId = this.state.cloud.on && this.state.cloud.user ? this.state.cloud.user.id : 'u1';
     const admins = this.state.adm.users.filter(function (x) { return x.role === 'admin' && x.status === 'active'; });
     const lastAdmin = target.role === 'admin' && target.status === 'active' && admins.length <= 1;
     if (patch === 'delete') { if (target.id === meId) return 'You cannot delete your own account.'; if (lastAdmin) return 'Keep at least one active admin.'; return null; }
@@ -4955,7 +4973,7 @@ class Component extends DCLogic {
       segs: viewRoles.map(function (r) { return { label: ROLE_META[r].label, cls: s.role === r ? 'on' : '', pick: function () { self.switchRole(r); } }; }),
       views: viewRoles.filter(function (r) { return r !== s.role; }).map(function (r) { return { label: 'Switch to ' + ROLE_META[r].label + ' View', pick: function () { self.switchRole(r); } }; }),
       showDemo: !s.cloud.on, showLoggedOut: s.loggedOut && !s.cloud.on,
-      hasNotice: !!(s.cloud.on && (s.site.maintenance || s.site.announcement)), notice: [s.site.maintenance ? 'Scheduled maintenance is in progress. Some features may be unavailable.' : '', s.site.announcement || ''].filter(Boolean).join(' '),
+      hasNotice: !!s.apiDown || !!(s.cloud.on && (s.site.maintenance || s.site.announcement)), notice: s.apiDown ? (s.apiDown === 'missing' ? 'The server (API) is not deployed, so sign-in and saving are off. You are looking at demo data. Site owner: make sure the api folder is in the repo and the workflow has api_location: "api".' : 'The server is not responding right now. You are looking at demo data and nothing is saved.') : [s.site.maintenance ? 'Scheduled maintenance is in progress. Some features may be unavailable.' : '', s.site.announcement || ''].filter(Boolean).join(' '),
       userMenu: s.userMenu, toggleUser: function () { self.setState({ userMenu: !s.userMenu }); },
       hasToast: !!s.toast, toast: s.toast || '',
       loggedOut: s.loggedOut, logout: function () { if (s.cloud.on) { self.cloudLogout(); return; } self.setState({ loggedOut: true, userMenu: false }); },
@@ -5878,7 +5896,7 @@ class Component extends DCLogic {
     const pf = function (k) { return function (e) { const v = e.target.value; self.setState((x) => ({ profile: Object.assign({}, x.profile, { [k]: v }) })); }; };
     const prof = {
       heading: isD ? 'Dr. ' + me.full : me.full,
-      roleChips: (s.cloud.on ? [s.cloud.user.role] : ROLE_ORDER).map(function (r) { return { label: (ROLE_META[r] || ROLE_META.patient).label, cls: (ROLE_META[r] || ROLE_META.patient).cls }; }),
+      roleChips: (s.cloud.on && s.cloud.user ? [s.cloud.user.role] : ROLE_ORDER).map(function (r) { return { label: (ROLE_META[r] || ROLE_META.patient).label, cls: (ROLE_META[r] || ROLE_META.patient).cls }; }),
       showDocCard: isP && !s.cloud.on,
       first: p.first, last: p.last, mobile: p.mobile, dob: p.dob, lang: p.lang, gender: p.gender,
       onFirst: pf('first'), onLast: pf('last'), onMobile: pf('mobile'), onDob: pf('dob'), onLang: pf('lang'), onGender: pf('gender'),

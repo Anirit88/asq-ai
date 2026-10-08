@@ -657,6 +657,7 @@
   if (!/^\/[\w\-\/]*$/.test(nextUrl)) nextUrl = '';
   var site = null;
   var preview = false;
+  var live = /^https?:$/.test(location.protocol) && !/claude|localhost|127\.0\.0\.1/.test(location.hostname);
   var lastPw = '';
 
   function show(id) { ['vChoose', 'vAuth', 'vChange'].forEach(function (v) { $(v).classList.toggle('hidden', v !== id); }); }
@@ -667,7 +668,9 @@
     return user && user.role === 'kiosk' ? '/kiosk' : '/';
   }
   async function api(method, url, body) {
-    var r = await fetch(url, { method: method, credentials: 'same-origin', headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined });
+    var ctl = new AbortController(); var tm = setTimeout(function () { ctl.abort(); }, 20000);
+    var r = await fetch(url, { method: method, credentials: 'same-origin', signal: ctl.signal, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined });
+    clearTimeout(tm);
     var data = null; try { data = await r.json(); } catch (e) {}
     return { status: r.status, ok: r.ok, data: data || {} };
   }
@@ -744,7 +747,7 @@
 
   $('fIn').onsubmit = async function (e) {
     e.preventDefault();
-    if (preview) { msg($('msg'), 'info', 'This is a preview. Sign-in works on your Azure site.'); return; }
+    if (preview) { msg($('msg'), live ? 'err' : 'info', live ? 'Sign-in is unavailable: the server (API) is not responding. If you run this site, check that the api folder deployed.' : 'This is a preview. Sign-in works on your Azure site.'); return; }
     var email = $('inEmail').value.trim(), pw = $('inPw').value;
     if (!email || !pw) { msg($('msg'), 'err', 'Enter your email and password.'); return; }
     busy($('inBtn'), true); msg($('msg'));
@@ -758,7 +761,7 @@
 
   $('fUp').onsubmit = async function (e) {
     e.preventDefault();
-    if (preview) { msg($('msg'), 'info', 'This is a preview. Account sign-up works on your Azure site.'); return; }
+    if (preview) { msg($('msg'), live ? 'err' : 'info', live ? 'Sign-up is unavailable: the server (API) is not responding. Please try again later.' : 'This is a preview. Account sign-up works on your Azure site.'); return; }
     var b = { first: $('upFirst').value.trim(), last: $('upLast').value.trim(), email: $('upEmail').value.trim(), dob: $('upDob').value, phone: $('upPhone').value.trim(), password: $('upPw').value };
     if (!b.first || !b.last || !b.email || !b.password) { msg($('msg'), 'err', 'Fill in your name, email and a password.'); return; }
     busy($('upBtn'), true); msg($('msg'));
