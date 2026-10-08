@@ -1,48 +1,37 @@
-# ASQAi on Azure: storage and security setup
+# ASQAi 2.0 on Azure: setup guide
 
-What's in this folder (put all of it at the root of your GitHub repo):
+This version adds:
 
-| File | What it does |
+- **Your own sign-in.** Patients and the care team sign in with email and password, so outside users don't need a Microsoft or GitHub account. Microsoft and GitHub stay as optional buttons.
+- **Admin view.** Manage users, roles, login pages, the kiosk, settings and the go-live checklist.
+- **Lobby kiosk.** A full kiosk at `/kiosk`. Check-ins and walk-ins sync to the doctor's check-in queue.
+- **Real doctors nearby.** Location or ZIP search, using the US national provider registry, plus a live OpenStreetMap map.
+
+## What's in this folder
+
+Put everything at the top level of your GitHub repo, replacing the old files.
+
+| File | What it is |
 |---|---|
-| `index.html` | The app. When it runs on Azure, it loads and saves each user's data through the API. |
-| `login.html` | Sign-in page (Microsoft or GitHub). |
-| `staticwebapp.config.json` | Security: everyone must sign in, plus security headers (CSP, HSTS, no framing). |
-| `api/` | Azure Function at `/api/state` that saves each user's data as a private JSON file in Blob Storage. |
+| `index.html` | The app: patient, doctor and admin views, plus the kiosk |
+| `login.html` | Your login pages. They are served at `/login`, `/patient` and `/doctor` |
+| `staticwebapp.config.json` | Page routes and security headers |
+| `api/` | The server code (Azure Functions): accounts, data, kiosk and doctor search |
 
 ---
 
-## 1. Create the Storage account (about 3 minutes)
+## Step 1. Upload the files to GitHub
 
-1. Go to Azure Portal, then **Create a resource**, then **Storage account**, then **Create**.
-2. On **Basics**:
-   - **Resource group:** use the same one as your Static Web App.
-   - **Name:** for example `asqaidata` (lowercase letters and numbers only).
-   - **Region:** same as your app.
-   - **Performance:** Standard.
-   - **Redundancy:** LRS (cheapest, fine for a demo).
-3. On **Advanced**:
-   - **Require secure transfer:** ✅ on.
-   - **Allow enabling anonymous access on individual containers:** ❌ off.
-   - **Minimum TLS version:** 1.2.
-4. Leave **Encryption** at the default (Microsoft-managed keys; data is encrypted at rest).
-5. **Review + create**, then **Create**.
-6. Open the new storage account, go to **Security + networking**, then **Access keys**, then **Show** next to key1's **Connection string**, and copy it.
+1. Unzip `asqai-azure.zip`.
+2. In your repo on github.com, click **Add file**, then **Upload files**.
+3. Drag in **everything inside** the `asqai-azure` folder: `api`, `index.html`, `login.html`, `staticwebapp.config.json` and `SETUP.md`.
+4. Click **Commit changes**.
 
-You don't need to create a container. The API creates a private `asqai-data` container the first time it saves.
+The `api` folder replaces the old one. If GitHub still shows the old file `api/src/functions/state.js`, open it, click the **⋯** menu, choose **Delete file**, and commit.
 
-## 2. Give the app the connection string
+## Step 2. Check the workflow file
 
-1. Open your **Static Web App** and go to **Settings**, then **Environment variables** (on older portals it's called **Configuration**).
-2. Under **Production**, click **+ Add**:
-   - **Name:** `STORAGE_CONNECTION_STRING`
-   - **Value:** the connection string you copied.
-3. Click **Apply** or **Save**.
-
-The value stays on the server. It never reaches the browser or your GitHub repo.
-
-## 3. Point the GitHub workflow at the API
-
-In your repo, open `.github/workflows/azure-static-web-apps-*.yml` and make the `with:` block look like this:
+Open `.github/workflows/azure-static-web-apps-….yml` and make sure these lines are under `with:`:
 
 ```yaml
           app_location: "/"
@@ -51,51 +40,120 @@ In your repo, open `.github/workflows/azure-static-web-apps-*.yml` and make the 
           skip_app_build: true
 ```
 
-Commit. The Actions run builds the API and deploys everything in about 2 minutes.
+## Step 3. Add the settings in Azure
 
-## 4. Turn on sign-in and roles
+In the Azure portal, open your Static Web App, then go to **Settings**, then **Environment variables**, then the **Production** tab. Add each of these with **+ Add**. When you've added all of them, click **Apply** at the bottom of the page, then **Confirm**.
 
-Sign-in already works with no setup. Microsoft and GitHub logins are built into Static Web Apps, and `staticwebapp.config.json` blocks every page and the API for anyone not signed in.
+| Name | Value | Why |
+|---|---|---|
+| `STORAGE_CONNECTION_STRING` | You already added this | Where all data is saved |
+| `ADMIN_EMAIL` | Your email, e.g. `taha.ghadiali@netweb.biz` | Creates the first admin account |
+| `ADMIN_PASSWORD` | A temporary password, e.g. `Start-2026!` | Used once. You choose a new one at first sign-in |
+| `SESSION_SECRET` | A long random string, 40+ characters | Signs sign-in cookies. Recommended. |
 
-**Who can open the Doctor view:** by default, everyone signs in as a patient. To make someone a doctor:
+To make a random `SESSION_SECRET`, mash the keyboard for 40+ characters, or use a password generator.
 
-1. Open the Static Web App and go to **Settings**, then **Role management**, then **Invite**.
-2. Fill in:
-   - **Authorization provider:** Microsoft or GitHub.
-   - **Invitee details:** their email (for Microsoft) or username (for GitHub).
-   - **Role:** `doctor`.
-3. **Generate**, then send them the link. Once they accept, "Switch to Doctor View" works for them. Other users see a message saying they don't have access.
+## Step 4. Wait for the deploy
 
-To let only invited people in at all, change `"authenticated"` to `"doctor"` (or a `patient` role you invite people to) in the two `/*` and `/api/*` routes in `staticwebapp.config.json`.
+1. In GitHub, open the **Actions** tab.
+2. Wait for the green ✅ (about 2–4 minutes).
 
-## 5. Check it works
+## Step 5. First sign-in as admin
 
-1. Open your `…azurestaticapps.net` URL. You should land on the sign-in page.
-2. Sign in, open the account menu (top right), and look for **"● Saved to Azure · time"**.
-3. Change something (for example your first name in Profile), then reload. The change should still be there.
-4. In the Storage account, open **Storage browser**, then **Blob containers**, then **asqai-data**, then **users**. You'll see one file per user.
+1. Open `https://<your-app>.azurestaticapps.net/doctor`.
+2. Enter your `ADMIN_EMAIL` and `ADMIN_PASSWORD`, then click **Sign in**.
+3. Choose your own password when asked. From then on, the `ADMIN_PASSWORD` setting is ignored.
+4. You land in the **Admin view**. Click **Platform** to see the go-live checklist.
 
-## What's protected and how
+## Step 6. Set things up in the Admin view
 
-| Area | Protection |
+**Overview**
+
+1. Click **Run check**. "Data storage" should say **Healthy**.
+
+**Users**
+
+1. Click **Add user**, then pick a role:
+   - **Doctor**
+   - **Admin**
+   - **Patient**
+   - **Kiosk**, for a lobby tablet
+2. You get a **temporary password** to share. The person sets their own password the first time they sign in.
+3. Use the buttons on each person's row to:
+   - edit them or change their role
+   - reset their password
+   - disable them (they're signed out everywhere)
+   - unlock a locked account
+   - delete them (inside **Edit**)
+
+**Login pages**
+
+1. Edit the headline, text, bullet points, clinic name, support phone and accent color.
+2. Choose which sign-in methods are allowed, and whether patients can create their own accounts.
+3. Set password length, how long people stay signed in, and the lockout after failed attempts.
+4. Click **Save changes**. The live pages update right away.
+
+**Kiosk**
+
+1. Change the **Staff exit PIN**. The default is 2468.
+2. Turn walk-ins, insurance photo, vitals and consent on or off.
+3. Choose the kiosk languages.
+
+**Platform**
+
+1. Click **Remove sample clinic data** when you're ready to start with only real patients.
+2. Use the export buttons to download all data, the user list or the audit log.
+
+## Step 7. Your sign-in links
+
+| Who | Link |
 |---|---|
-| Who can reach the app | Every page and the API require sign-in (Microsoft Entra ID or GitHub). |
-| Whose data you see | The API identifies the user from a header that Azure sets after sign-in (browsers can't fake it). Each user gets a separate file, named with a one-way hash of their ID. |
-| Doctor view | Only users invited with the `doctor` role can open it. |
-| Data at rest | Azure Storage encrypts everything automatically. The container is private, with no public access. |
-| Data in transit | HTTPS only, TLS 1.2 or higher, and HSTS. |
-| Browser hardening | Content-Security-Policy (no outside scripts or connections), no framing (clickjacking), nosniff, and a strict referrer policy. |
-| Secrets | The storage key lives only in the app's environment variables, never in code or GitHub. |
-| Abuse limits | 2 MB maximum per save; requests that aren't JSON are rejected. |
-| Erasing data | `DELETE /api/state` removes the signed-in user's file. |
+| Patients | `https://<your-app>.azurestaticapps.net/patient` |
+| Doctors, admins and kiosks | `https://<your-app>.azurestaticapps.net/doctor` |
+| Lobby tablet | `https://<your-app>.azurestaticapps.net/kiosk` |
 
-## Optional extras (cost money or need the Standard plan, about $9/month)
+## Step 8. Set up the lobby tablet
 
-- **Password-protect the whole site** (on top of sign-in): Static Web App, then **Settings**, then **Configuration**, then **Password protection**.
-- **Key Vault for the connection string:** keep the secret in Key Vault and reference it from the setting. This needs Standard plus a managed identity.
-- **Microsoft Defender for Storage:** malware and anomaly alerts on the storage account.
-- **Soft delete for blobs:** Storage account, then **Data management**, then **Data protection**, then turn on soft delete for 7 days. This lets you undo accidental overwrites. It's free apart from the storage it uses.
+1. In **Users**, add a user with the role **Kiosk**.
+2. On the tablet, open `/kiosk` and sign in with that account.
+3. Lock the tablet to the browser:
+   - iPad: **Settings**, then **Accessibility**, then **Guided Access**.
+   - Android: **Screen pinning**.
+4. Staff tap the lock icon at the top right and enter the PIN to restart the kiosk or sign the tablet out.
 
-## Before using real patient data (not now)
+The kiosk resets itself after the inactivity time you set, and after each finished check-in.
 
-This setup is for a demo. Real patient health information (PHI) needs a signed HIPAA BAA with Microsoft, Entra ID only (no GitHub logins), private endpoints, customer-managed keys, audit logging to Log Analytics, a stricter CSP, and a proper database. Plan that as a separate step.
+---
+
+## How it works
+
+| Part | Details |
+|---|---|
+| **Accounts** | Stored in your private storage. Passwords are hashed with scrypt and never stored or shown after creation. Sign-in uses a secure, HttpOnly cookie. |
+| **Roles** | **Patient**: patient view only. **Doctor**: doctor view. **Admin**: everything. **Kiosk**: check-in screens only, and it sees just first name, last initial and visit time. |
+| **Lockout** | After the set number of failed attempts, the account locks for 15 minutes. Admins can unlock it early. |
+| **Clinic data** | Schedule, queue, intake records, settings and audit log are shared by the care team. Each patient's own data is private to them. |
+| **Doctor search** | Doctors come from the CMS NPI Registry. Practice locations are placed using the US Census geocoder. Clinics, hospitals, map tiles and address search come from OpenStreetMap. All are free with no API key, and only work in the US. |
+| **Requests to outside doctors** | Practices found in the search aren't connected to ASQAi, so "Request visit" saves the request in the patient's appointments and shows the office phone number to confirm. |
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| "That email and password do not match" for the admin | Check that `ADMIN_EMAIL` and `ADMIN_PASSWORD` were saved: click **Apply** at the bottom of the page, then **Confirm**. Wait one minute and try again. |
+| Overview says Data storage **Error** | `STORAGE_CONNECTION_STRING` is missing or wrong. |
+| Doctor search says "did not respond" | The public registry may be busy. Try again, or search by ZIP code. |
+| Map is grey | Allow the page to load images from `tile.openstreetmap.org`. Some company networks block it. |
+| "Use my location" does nothing | The browser blocked location. Allow it in the browser's site settings, or type a ZIP code. |
+| A tablet shows the sign-in page again | The session ended. Raise **Stay signed in for** on the **Login pages** screen (up to 7 days), then sign the tablet in again. |
+
+## Before using real patient data
+
+This setup is for demos and pilots. For real patient health information you'll need:
+
+- a signed HIPAA BAA with Microsoft
+- Microsoft Entra ID for staff sign-in
+- private networking for storage
+- audit logs sent to Log Analytics
+- multi-factor sign-in
+- email delivery for password resets

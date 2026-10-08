@@ -1,16 +1,16 @@
 {
   "routes": [
-    { "route": "/login.html", "allowedRoles": ["anonymous", "authenticated"] },
+    { "route": "/login", "rewrite": "/login.html" },
+    { "route": "/patient", "rewrite": "/login.html" },
+    { "route": "/doctor", "rewrite": "/login.html" },
+    { "route": "/staff", "rewrite": "/login.html" },
+    { "route": "/kiosk", "rewrite": "/index.html" },
+    { "route": "/admin", "rewrite": "/index.html" },
     { "route": "/.auth/login/twitter", "statusCode": 404 },
-    { "route": "/api/*", "allowedRoles": ["authenticated"] },
-    { "route": "/*", "allowedRoles": ["authenticated"] }
+    { "route": "/SETUP.md", "statusCode": 404 }
   ],
-  "responseOverrides": {
-    "401": { "redirect": "/login.html", "statusCode": 302 },
-    "403": { "rewrite": "/login.html" }
-  },
   "globalHeaders": {
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob: data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://tile.openstreetmap.org; media-src 'self' blob: data: mediastream:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
