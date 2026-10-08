@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · ASQAi</title>
+<style>
+  :root{--ink:#14202e;--muted:#5d6b7a;--line:#e3e7ec;--bg:#f5f7f9;--card:#fff;--brand:#0f6e66}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:16px}
+  .card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px 28px}
+  h1{font-size:24px;letter-spacing:-.02em;margin:0 0 4px}
+  p{color:var(--muted);margin:0 0 24px}
+  a.btn{display:flex;align-items:center;justify-content:center;gap:10px;height:46px;border-radius:10px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:600;margin-bottom:10px;background:#fff}
+  a.btn:hover{border-color:#c4ccd5;background:#fafbfc}
+  a.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+  a.btn.primary:hover{background:#0c5d56}
+  .note{font-size:12.5px;color:var(--muted);margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>ASQAi</h1>
+  <p>Sign in to continue to your intake and appointments.</p>
+  <a class="btn primary" href="/.auth/login/aad?post_login_redirect_uri=/">Continue with Microsoft</a>
+  <a class="btn" href="/.auth/login/github?post_login_redirect_uri=/">Continue with GitHub</a>
+  <div class="note">Demo environment. Do not enter real patient information.</div>
+</main>
+</body>
+</html>
