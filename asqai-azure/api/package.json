@@ -1,0 +1,9 @@
+{
+  "name": "asqai-api",
+  "version": "2.1.0",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@azure/storage-blob": "^12.24.0"
+  }
+}
