@@ -1639,9 +1639,107 @@ body,.app{background:#EDEEEB}
 .secbtn .scc{font-size:12px;color:var(--dim)}
 .codebox{display:flex;gap:8px;align-items:center}
 .codebox .inp{max-width:220px;font-family:ui-monospace,Menlo,monospace;letter-spacing:.08em}
+
+/* ===== v8: color + motion layer ===== */
+@property --spin{syntax:'<angle>';inherits:false;initial-value:0deg}
+:root{--c1:#14B8A6;--c2:#0EA5E9;--c3:#8B5CF6;--c4:#F43F5E;--c5:#F59E0B;--c6:#10B981}
+.app{isolation:isolate}
+.fx-aurora{position:fixed;inset:-12%;z-index:-1;pointer-events:none;filter:blur(90px) saturate(1.15);opacity:.42}
+.fx-aurora i{position:absolute;border-radius:50%;animation:fxau 26s ease-in-out infinite alternate}
+.fx-aurora i:nth-child(1){width:44vw;height:44vw;left:-6%;top:-10%;background:radial-gradient(closest-side,#5EEAD4,transparent)}
+.fx-aurora i:nth-child(2){width:38vw;height:38vw;left:62%;top:-8%;background:radial-gradient(closest-side,#7DD3FC,transparent);animation-duration:31s;animation-delay:-8s}
+.fx-aurora i:nth-child(3){width:34vw;height:34vw;left:74%;top:52%;background:radial-gradient(closest-side,#C4B5FD,transparent);animation-duration:29s;animation-delay:-14s}
+.fx-aurora i:nth-child(4){width:30vw;height:30vw;left:8%;top:62%;background:radial-gradient(closest-side,#FDBA74,transparent);opacity:.7;animation-duration:35s;animation-delay:-4s}
+.fx-aurora i:nth-child(5){width:26vw;height:26vw;left:40%;top:34%;background:radial-gradient(closest-side,#FDA4AF,transparent);opacity:.45;animation-duration:40s;animation-delay:-20s}
+@keyframes fxau{0%{transform:translate(0,0) scale(1)}50%{transform:translate(5vw,6vh) scale(1.12)}100%{transform:translate(-4vw,-3vh) scale(.94)}}
+.fx-glow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(20,184,166,.20),rgba(139,92,246,.10) 55%,transparent);transform:translate3d(-999px,-999px,0);will-change:transform;transition:opacity .4s}
+.fx-bar{position:fixed;left:0;top:0;height:3px;width:100%;z-index:200;pointer-events:none;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,#14B8A6,#0EA5E9,#8B5CF6,#F43F5E)}
+.fx-rip{position:fixed;z-index:300;pointer-events:none;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:radial-gradient(closest-side,rgba(20,184,166,.45),rgba(14,165,233,.18) 70%,transparent)}
+
+/* headings */
+.h1.xl1,.hero .h1{background:linear-gradient(100deg,#18181B 0%,#18181B 42%,#0F766E 70%,#0EA5E9 88%,#8B5CF6);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:fxsheen 9s ease-in-out infinite alternate}
+@keyframes fxsheen{0%{background-position:0 0}100%{background-position:100% 0}}
+
+/* surfaces: spotlight + lift + tilt */
+.tile,.kpi,.card{--mx:-400px;--my:-400px;--rx:0deg;--ry:0deg}
+.tile,.kpi{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.tile:not(.accent):hover,.kpi:hover,.card:not(.k-card):hover{background-image:radial-gradient(520px circle at var(--mx) var(--my),rgba(20,184,166,.085),rgba(14,165,233,.04) 35%,transparent 60%)}
+.tile:hover,.kpi:hover{transform:perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-3px);box-shadow:0 0 0 1px rgba(20,184,166,.18),0 22px 44px -22px rgba(15,118,110,.38),0 8px 18px -12px rgba(139,92,246,.18)}
+.card:not(.k-card):hover{box-shadow:0 0 0 1px rgba(20,184,166,.16),0 18px 40px -24px rgba(15,118,110,.32)}
+
+/* KPIs: colored accents */
+.kpis .kpi{position:relative;overflow:hidden}
+.kpis .kpi::before{content:'';position:absolute;left:18px;right:18px;top:0;height:3px;border-radius:0 0 4px 4px;background:var(--kc,#14B8A6)}
+.kpis .kpi:nth-child(4n+1){--kc:linear-gradient(90deg,#14B8A6,#5EEAD4)}
+.kpis .kpi:nth-child(4n+2){--kc:linear-gradient(90deg,#0EA5E9,#7DD3FC)}
+.kpis .kpi:nth-child(4n+3){--kc:linear-gradient(90deg,#8B5CF6,#C4B5FD)}
+.kpis .kpi:nth-child(4n+4){--kc:linear-gradient(90deg,#F59E0B,#FCD34D)}
+.ov-i{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .25s}
+.ov-i:hover{transform:translateY(-2px);box-shadow:0 12px 24px -16px rgba(15,118,110,.45)}
+.ov .ov-i:nth-child(4n+1) .ov-v{color:#0F766E}.ov .ov-i:nth-child(4n+2) .ov-v{color:#0284C7}.ov .ov-i:nth-child(4n+3) .ov-v{color:#7C3AED}.ov .ov-i:nth-child(4n+4) .ov-v{color:#D97706}
+
+/* hero tile: living gradient */
+.tile.accent{background:radial-gradient(60% 80% at 100% 0%,rgba(14,165,233,.55),transparent 60%),radial-gradient(50% 70% at 85% 110%,rgba(139,92,246,.5),transparent 60%),radial-gradient(40% 60% at 0% 100%,rgba(16,185,129,.45),transparent 60%),linear-gradient(135deg,#0F766E,#0B5F58);background-size:160% 160%,160% 160%,160% 160%,100% 100%;animation:fxhero 14s ease-in-out infinite alternate;overflow:hidden;position:relative}
+.tile.accent::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(380px circle at var(--mx) var(--my),rgba(255,255,255,.16),transparent 55%)}
+@keyframes fxhero{0%{background-position:0% 0%,100% 100%,0% 100%,0 0}100%{background-position:100% 30%,0% 60%,40% 0%,0 0}}
+
+/* nav + primary actions */
+.nav-ind{background:linear-gradient(120deg,#0F766E,#14B8A6 55%,#0EA5E9);box-shadow:0 8px 20px -8px rgba(14,165,233,.55),0 0 0 1px rgba(255,255,255,.25) inset}
+.nav button{transition:color .2s,transform .2s}
+.nav button:hover{transform:translateY(-1px)}
+.seg-thumb{background:linear-gradient(120deg,#18181B,#134E4A)}
+.btn-p{background:linear-gradient(110deg,#0F766E 0%,#0F766E 35%,#14B8A6 50%,#0F766E 65%,#0F766E 100%);background-size:260% 100%;background-position:100% 0;transition:background-position .7s ease,box-shadow .25s,transform .1s}
+.btn-p:hover:not(:disabled){background:linear-gradient(110deg,#0F766E 0%,#0F766E 35%,#14B8A6 50%,#0F766E 65%,#0F766E 100%);background-size:260% 100%;background-position:0 0;box-shadow:0 10px 24px -10px rgba(15,118,110,.75),0 0 0 4px rgba(20,184,166,.14)}
+.btn:active:not(:disabled){transform:translateY(1px) scale(.985)}
+.pill,.fchip{transition:transform .18s,box-shadow .18s,background .18s,border-color .18s,color .18s}
+.pill:hover,.fchip:hover{transform:translateY(-1px)}
+.pill.on,.fchip.on{background:linear-gradient(120deg,#0F766E,#14B8A6);border-color:transparent;color:#fff;box-shadow:0 8px 18px -10px rgba(15,118,110,.8)}
+
+/* AI + voice orbs: color wheel */
+.ai-orb{background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.75),rgba(255,255,255,0) 38%),conic-gradient(from var(--spin),#14B8A6,#0EA5E9,#8B5CF6,#F43F5E,#F59E0B,#10B981,#14B8A6);animation:fxspin 7s linear infinite;box-shadow:0 14px 30px -12px rgba(139,92,246,.55),0 0 0 6px rgba(20,184,166,.08)}
+.orb-core{background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.55),rgba(255,255,255,0) 40%),conic-gradient(from var(--spin),#0F766E,#0EA5E9,#8B5CF6,#0F766E);animation:fxspin 9s linear infinite}
+@keyframes fxspin{to{--spin:360deg}}
+
+/* charts */
+.cbar-fill{background:linear-gradient(180deg,#5EEAD4,#0F766E)}
+.cbar:nth-child(3n+2) .cbar-fill{background:linear-gradient(180deg,#7DD3FC,#0284C7)}
+.cbar:nth-child(3n+3) .cbar-fill{background:linear-gradient(180deg,#C4B5FD,#7C3AED)}
+.cbar:hover .cbar-fill{filter:brightness(1.08) saturate(1.1)}
+.hb-fill{background:linear-gradient(90deg,#0F766E,#14B8A6 60%,#0EA5E9)}
+.hb-fill.warm{background:linear-gradient(90deg,#F59E0B,#F43F5E)}
+.hbars .hb:nth-child(3n+2) .hb-fill:not(.warm){background:linear-gradient(90deg,#0284C7,#7DD3FC)}
+.hbars .hb:nth-child(3n+3) .hb-fill:not(.warm){background:linear-gradient(90deg,#7C3AED,#C4B5FD)}
+
+/* intake form */
+.qc{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s}
+.qc:focus-within{transform:translateY(-2px);box-shadow:0 0 0 2px rgba(20,184,166,.35),0 18px 40px -24px rgba(15,118,110,.45)}
+.fsec h3{background:linear-gradient(95deg,#18181B 40%,#0F766E);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fsec-n{color:#0F766E}
+.bsec-n{background:linear-gradient(135deg,#0F766E,#0EA5E9)}
+.secbtn.done .sdot{background:linear-gradient(135deg,#0F766E,#14B8A6)}
+
+/* login preview in admin: match the teal reel */
+.lpv{background:radial-gradient(60% 70% at 85% 10%,rgba(139,92,246,.45),transparent 60%),radial-gradient(50% 60% at 20% 100%,rgba(14,165,233,.35),transparent 60%),radial-gradient(120% 90% at 65% 35%,#0F5E56 0%,#0A3A36 45%,#031311 100%)}
+.lpv::before{background:linear-gradient(90deg,transparent,rgba(160,245,228,.6),transparent)}
+.lpv::after{background:radial-gradient(closest-side,#fff,rgba(94,234,212,.4),transparent)}
+.lpv-main{background:linear-gradient(160deg,rgba(16,90,82,.55),rgba(4,36,33,.65));border-color:rgba(150,235,215,.25)}
+.lpv-pill{border-color:rgba(150,235,215,.2);color:#D7F7EF}
+.lpv-tabs{color:#9CCBC2}
+.lpv-in{background:rgba(2,22,20,.5);border-color:rgba(150,235,215,.22);color:#6E9E95}
+.lpv-sso{border-color:rgba(150,235,215,.22)}
+.lpv-or{color:#5F8E86}
+
+.hdr{background:rgba(237,238,235,.55)!important;-webkit-backdrop-filter:saturate(1.6) blur(18px);backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid rgba(255,255,255,.6)!important}
+.lpv{background:radial-gradient(60% 60% at 15% 20%,rgba(20,184,166,.35),transparent 60%),radial-gradient(50% 50% at 70% 90%,rgba(14,165,233,.25),transparent 60%),linear-gradient(160deg,#06302C,#04211E 45%,#021412)!important}
+.lpv::before{left:0;right:46%;top:52%;height:60px;transform:translateY(-50%);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g'%3E%3Cstop offset='0' stop-color='%235EEAD4'/%3E%3Cstop offset='.6' stop-color='%2338BDF8'/%3E%3Cstop offset='1' stop-color='%23A78BFA'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 40h40l6-6 6 6h10l4 6 6-40 6 44 5-10h30l8-8 8 8h40l6-6 6 6h10l4 6 6-40 6 44 5-10h48' fill='none' stroke='url(%23g)' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat!important}
+.lpv::after{display:none}
+.lpv-side{padding:22px 50% 20px 20px!important;text-align:left!important;align-items:flex-start!important}
+.lpv-main{left:auto!important;right:12px;top:50%;bottom:auto!important;transform:translateY(-50%)}
+@media (prefers-reduced-motion:reduce){.fx-aurora i,.h1.xl1,.hero .h1,.tile.accent,.ai-orb,.orb-core{animation:none}.tile:hover,.kpi:hover{transform:none}.fx-glow{display:none}}
 </style>
 </helmet>
 <div class="app">
+<div class="fx-aurora" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="fx-glow" aria-hidden="true"></div><div class="fx-bar" aria-hidden="true"></div>
 
 <header class="hdr">
 <div class="hdr-in">
@@ -3917,7 +4015,87 @@ class Component extends DCLogic {
     this.initial = clone(this.state);
   }
 
-  componentDidMount() { this.animateCounters(); this.cloudInit(); }
+  componentDidMount() { this.animateCounters(); this.cloudInit(); this.fxInit(); }
+  fxInit() {
+    if (this.fx || typeof window === 'undefined' || !document.querySelector) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fx = this.fx = { on: [], seen: new WeakSet(), counted: new WeakSet() };
+    const add = (t, ev, fn, o) => { t.addEventListener(ev, fn, o); fx.on.push([t, ev, fn, o]); };
+    const app = document.querySelector('.app'); if (!app) return;
+    const glow = app.querySelector('.fx-glow'), bar = app.querySelector('.fx-bar');
+    let px = -999, py = -999, gx = -999, gy = -999, hot = null;
+    const loop = () => {
+      gx += (px - gx) * .12; gy += (py - gy) * .12;
+      if (glow) glow.style.transform = 'translate3d(' + gx.toFixed(1) + 'px,' + gy.toFixed(1) + 'px,0)';
+      fx.raf = requestAnimationFrame(loop);
+    };
+    if (!reduce) fx.raf = requestAnimationFrame(loop);
+    const reset = (el) => { if (!el) return; el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); };
+    add(document, 'pointermove', (e) => {
+      px = e.clientX; py = e.clientY;
+      const el = e.target && e.target.closest ? e.target.closest('.tile,.kpi,.card') : null;
+      if (el !== hot) { reset(hot); hot = el; }
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      el.style.setProperty('--mx', x + 'px'); el.style.setProperty('--my', y + 'px');
+      if (!reduce && (el.classList.contains('tile') || el.classList.contains('kpi'))) {
+        const typing = document.activeElement && el.contains(document.activeElement) && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+        const k = typing ? 0 : (el.classList.contains('kpi') ? 6 : 3);
+        el.style.setProperty('--rx', ((.5 - y / r.height) * k).toFixed(2) + 'deg'); el.style.setProperty('--ry', ((x / r.width - .5) * k).toFixed(2) + 'deg');
+      }
+    }, { passive: true });
+    add(document, 'pointerleave', () => { px = py = -999; reset(hot); hot = null; });
+    const onScroll = () => { if (!bar) return; const h = document.documentElement.scrollHeight - innerHeight; bar.style.transform = 'scaleX(' + (h > 4 ? Math.min(1, scrollY / h) : 0) + ')'; };
+    add(window, 'scroll', onScroll, { passive: true }); onScroll();
+    add(document, 'pointerdown', (e) => {
+      if (reduce || !e.target.closest) return;
+      const b = e.target.closest('.btn,.pill,.fchip,.nav button,.seg-btn,.k-big,.ov-i,.secbtn,.um-opt,.kbtn'); if (!b) return;
+      const d = document.createElement('div'); d.className = 'fx-rip'; d.style.left = e.clientX + 'px'; d.style.top = e.clientY + 'px'; document.body.appendChild(d);
+      const sz = Math.max(b.offsetWidth, b.offsetHeight) / 7 + 6;
+      const an = d.animate([{ transform: 'scale(1)', opacity: .9 }, { transform: 'scale(' + sz + ')', opacity: 0 }], { duration: 650, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      an.onfinish = () => d.remove();
+    }, { passive: true });
+    // count-up for big numbers + reveal on scroll
+    const NUM = /^(\$?)(\d{1,3}(?:,\d{3})*|\d+)(\.\d+)?(%?)$/;
+    const countUp = (el) => {
+      if (reduce || fx.counted.has(el)) return; fx.counted.add(el);
+      const txt = (el.textContent || '').trim(); const m = NUM.exec(txt); if (!m) return;
+      const dec = m[3] ? m[3].length - 1 : 0; const target = parseFloat((m[2] + (m[3] || '')).replace(/,/g, '')); if (!(target > 0)) return;
+      const fmt = (v) => m[1] + (dec ? v.toFixed(dec) : Math.round(v).toLocaleString('en-US')) + m[4];
+      const t0 = performance.now(); let lastW = null;
+      const step = (t) => {
+        if (lastW !== null && el.textContent !== lastW) return; // the app changed it, stop
+        const p = Math.min(1, (t - t0) / 900); const e = 1 - Math.pow(1 - p, 3);
+        lastW = p < 1 ? fmt(target * e) : txt; el.textContent = lastW;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const io = fx.io = ('IntersectionObserver' in window) ? new IntersectionObserver((ents) => {
+      let i = 0;
+      ents.forEach((en) => {
+        const el = en.target;
+        if (el.matches('.kpi-v,.ov-v')) { if (en.isIntersecting) { countUp(el); io.unobserve(el); } return; }
+        if (!fx.seen.has(el)) { fx.seen.add(el); if (en.isIntersecting) { io.unobserve(el); return; } return; }
+        if (en.isIntersecting) {
+          io.unobserve(el);
+          if (!reduce && el.animate) el.animate([{ opacity: 0, transform: 'translateY(18px) scale(.985)' }, { opacity: 1, transform: 'none' }], { duration: 560, delay: Math.min(i++, 6) * 60, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+        }
+      });
+    }, { threshold: .08 }) : null;
+    const scan = () => {
+      fx.pend = false; if (!io) return;
+      app.querySelectorAll('.tile,.kpi,.card,.qc,.pc,.kpi-v,.ov-v').forEach((el) => { if (!el.__fxo) { el.__fxo = 1; io.observe(el); } });
+    };
+    scan();
+    if ('MutationObserver' in window) { fx.mo = new MutationObserver(() => { if (!fx.pend) { fx.pend = true; requestAnimationFrame(scan); } }); fx.mo.observe(app, { childList: true, subtree: true }); }
+  }
+  fxStop() {
+    const fx = this.fx; if (!fx) return;
+    fx.on.forEach((x) => x[0].removeEventListener(x[1], x[2], x[3])); cancelAnimationFrame(fx.raf);
+    if (fx.io) fx.io.disconnect(); if (fx.mo) fx.mo.disconnect(); this.fx = null;
+  }
   componentDidUpdate() { this.cloudQueue(); }
   /* ---------- cloud: accounts and sync (Azure Static Web Apps + Functions + Blob Storage) ---------- */
   async api(method, url, body) {
@@ -4448,6 +4626,7 @@ class Component extends DCLogic {
     this.top();
   }
   componentWillUnmount() {
+    this.fxStop();
     this.timers.forEach(clearTimeout); clearTimeout(this.voiceT); clearTimeout(this.toastT);
     clearInterval(this.typer); clearInterval(this.ehrT); clearInterval(this.docT); clearInterval(this.callT); cancelAnimationFrame(this.raf);
     clearInterval(this.kT); clearInterval(this.clinicPoll); this.kCamStop();
