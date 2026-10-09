@@ -1615,6 +1615,30 @@ body,.app{background:#EDEEEB}
 .lpv-sso{background:rgba(255,255,255,.06);border-color:rgba(180,205,255,.22);color:#fff;height:22px}
 .lpv-or{color:#5E739E}
 .lpv-btn{height:24px}
+
+/* ===== v7: sections, views ===== */
+.bsec{border:1px solid var(--line);border-radius:18px;background:#FAFAFA;padding:12px;display:flex;flex-direction:column;gap:10px}
+.bsec-h{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bsec-n{width:30px;height:30px;border-radius:10px;background:#18181B;color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.bsec-f{flex:1;min-width:220px;display:grid;gap:6px}
+.bsec-t{height:38px;font-weight:700;font-size:15px}
+.bsec-d{height:34px;font-size:13px}
+.bsec-empty{font-size:13.5px;color:var(--muted);padding:10px 12px;border:1px dashed var(--line2);border-radius:12px;background:#fff}
+.bsec .link{align-self:flex-start;min-height:30px;padding:0 4px}
+.fsec{display:flex;flex-direction:column;gap:2px;padding:6px 4px 0}
+.fsec-n{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.fsec h3{margin:0;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.fsec p{margin:0;color:var(--muted);font-size:14px}
+.qwrap{display:contents}
+.secnav{display:flex;flex-direction:column;gap:4px;max-height:360px;overflow:auto}
+.secbtn{display:flex;align-items:center;gap:10px;border:0;background:transparent;text-align:left;font:inherit;font-size:13.5px;padding:8px 10px;border-radius:10px;cursor:pointer;color:var(--ink2)}
+.secbtn:hover{background:var(--soft)}
+.secbtn .sdot{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line2);display:grid;place-items:center;flex:none;font-size:11px;font-weight:700;color:var(--muted);background:#fff}
+.secbtn.done .sdot{background:#0F766E;border-color:#0F766E;color:#fff}
+.secbtn .sct{flex:1;min-width:0;font-weight:600}
+.secbtn .scc{font-size:12px;color:var(--dim)}
+.codebox{display:flex;gap:8px;align-items:center}
+.codebox .inp{max-width:220px;font-family:ui-monospace,Menlo,monospace;letter-spacing:.08em}
 </style>
 </helmet>
 <div class="app">
@@ -1643,7 +1667,6 @@ body,.app{background:#EDEEEB}
 <button class="nav-item {{ nav.appointments }}" onClick="{{ go.appointments }}">Schedule</button>
 <button class="nav-item {{ nav.queue }}" onClick="{{ go.queue }}">Check-in</button>
 <button class="nav-item {{ nav.intakes }}" onClick="{{ go.intakes }}">Intakes</button>
-<button class="nav-item {{ nav.builder }}" onClick="{{ go.builder }}">Builder</button>
 <button class="nav-item {{ nav.analytics }}" onClick="{{ go.analytics }}">Analytics</button>
 </nav>
 </sc-if>
@@ -1652,10 +1675,10 @@ body,.app{background:#EDEEEB}
 <span class="nav-ind {{ ui.navHide }}" style="transform: translateX({{ ui.navX }}px)"></span>
 <button class="nav-item {{ nav.dashboard }}" onClick="{{ go.dashboard }}">Overview</button>
 <button class="nav-item {{ nav.users }}" onClick="{{ go.users }}">Users</button>
-<button class="nav-item {{ nav.logins }}" onClick="{{ go.logins }}">Login pages</button>
+<button class="nav-item {{ nav.builder }}" onClick="{{ go.builder }}">Intake form</button>
+<button class="nav-item {{ nav.logins }}" onClick="{{ go.logins }}">Sign-in</button>
 <button class="nav-item {{ nav.kiosks }}" onClick="{{ go.kiosks }}">Kiosk</button>
 <button class="nav-item {{ nav.settings }}" onClick="{{ go.settings }}">Settings</button>
-<button class="nav-item {{ nav.platform }}" onClick="{{ go.platform }}">Platform</button>
 </nav>
 </sc-if>
 </div>
@@ -1703,7 +1726,7 @@ body,.app{background:#EDEEEB}
 <div class="small muted" style="padding: 8px 12px 10px; font-weight: 700">Presenter tools</div>
 <button class="um-opt" onClick="{{ demo.autofill }}"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>Auto-fill intake answers</button>
 <button class="um-opt" onClick="{{ demo.skipToSchedule }}"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>Skip to scheduling</button>
-<button class="um-opt" onClick="{{ demo.toBuilder }}"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="5" rx="1.5"></rect><rect x="13" y="16" width="8" height="5" rx="1.5"></rect><path d="M7 8v4h10v4"></path></svg>Open Intake Builder (doctor)</button>
+<button class="um-opt" onClick="{{ demo.toBuilder }}"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="5" rx="1.5"></rect><rect x="13" y="16" width="8" height="5" rx="1.5"></rect><path d="M7 8v4h10v4"></path></svg>Open intake form builder (admin)</button>
 <button class="um-opt" onClick="{{ demo.kiosk }}"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 18h6"></path></svg>Open lobby kiosk</button>
 <button class="um-opt" onClick="{{ demo.toAdmin }}"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>Open admin console</button>
 <button class="um-opt danger" onClick="{{ demo.reset }}"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4v6h6M20 20v-6h-6M5 15a7 7 0 0 0 12 3M19 9A7 7 0 0 0 7 6"></path></svg>Reset all demo data</button>
@@ -1929,16 +1952,16 @@ body,.app{background:#EDEEEB}
 </div>
 <div style="text-align: center; font-weight: 600">{{ form.done }} / {{ form.total }} {{ langs.ui.done }}</div>
 <sc-if value="{{ hie.hasUnconf }}" hint-placeholder-val="{{ false }}"><div class="prefbar"><span>{{ hie.unconf }} pre-filled answers to confirm</span><button class="link" style="min-height: 28px; padding: 0" onClick="{{ hie.confirmAll }}">Confirm all</button></div></sc-if>
-<div class="qnav">
-<sc-for list="{{ form.qs }}" as="q" hint-placeholder-count="9">
-<button class="qn {{ q.navCls }}" onClick="{{ q.jump }}"><span class="dot"><sc-if value="{{ q.isOk }}" hint-placeholder-val="{{ false }}"><svg class="ic" viewBox="0 0 24 24" style="width: 11px; height: 11px; stroke-width: 3.5"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if></span><span class="tx">{{ q.text }}</span><sc-if value="{{ q.required }}" hint-placeholder-val="{{ false }}"><span class="rq">*</span></sc-if></button>
-</sc-for>
+<div class="secnav" aria-label="Sections">
+<sc-for list="{{ form.secs }}" as="x" hint-placeholder-count="5"><button class="secbtn {{ x.cls }}" onClick="{{ x.jump }}"><span class="sdot">{{ x.mark }}</span><span class="sct">{{ x.title }}</span><span class="scc">{{ x.done }}/{{ x.count }}</span></button></sc-for>
 </div>
 <div class="small muted" style="line-height: 1.45">{{ langs.ui.note }}</div>
 <button class="btn btn-p w100" disabled="{{ form.cantReview }}" onClick="{{ wiz.review }}">{{ langs.ui.review }}<svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
 </div>
 <div class="qlist">
 <sc-for list="{{ form.qs }}" as="q" hint-placeholder-count="6">
+<div class="qwrap">
+<sc-if value="{{ q.secStart }}" hint-placeholder-val="{{ false }}"><div class="fsec" id="fsec-{{ q.secId }}"><span class="fsec-n">Section {{ q.secNum }} of {{ form.secTotal }}</span><h3>{{ q.secTitle }} <span class="chip {{ q.secCls }}">{{ q.secDone }}/{{ q.secCount }}</span></h3><sc-if value="{{ q.hasSecDesc }}" hint-placeholder-val="{{ false }}"><p>{{ q.secDesc }}</p></sc-if></div></sc-if>
 <div class="qc {{ q.cls }}" id="fq-{{ q.id }}" style="animation-delay: {{ q.delay }}ms">
 <div class="qh">
 <span class="qnum">{{ q.num }}</span>
@@ -1958,6 +1981,7 @@ body,.app{background:#EDEEEB}
 </div>
 </sc-if>
 <sc-if value="{{ q.isCond }}" hint-placeholder-val="{{ false }}"><div class="condnote"><svg class="ic sm" viewBox="0 0 24 24"><path d="M6 3v12a4 4 0 0 0 4 4h8M14 15l4 4-4 4"></path></svg>{{ q.condText }}</div></sc-if>
+</div>
 </div>
 </div>
 </sc-for>
@@ -2059,15 +2083,18 @@ body,.app{background:#EDEEEB}
 <div class="card pc">
 <div class="pav" style="background: {{ p.avBg }}">{{ p.initials }}</div>
 <div style="flex: 1; min-width: 220px">
-<div class="pn">{{ p.name }}<sc-if value="{{ p.best }}" hint-placeholder-val="{{ true }}"><span class="best">BEST MATCH</span></sc-if><sc-if value="{{ p.pref }}" hint-placeholder-val="{{ false }}"><span class="pref">YOUR PICK</span></sc-if><span class="stars">★ {{ p.rt }} <i>({{ p.rn }})</i></span></div>
+<div class="pn">{{ p.name }}<sc-if value="{{ p.best }}" hint-placeholder-val="{{ true }}"><span class="best">BEST MATCH</span></sc-if><sc-if value="{{ p.pref }}" hint-placeholder-val="{{ false }}"><span class="pref">YOUR PICK</span></sc-if><sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ true }}"><span class="stars">★ {{ p.rt }} <i>({{ p.rn }})</i></span></sc-if></div>
 <div style="color: #0F766E; font-weight: 700; font-size: 14px; margin-top: 3px">{{ p.specialty }}</div>
-<div class="pmeta"><span><svg class="ic sm" viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M3 21h18M8 7h4M8 11h4M8 15h4"></path></svg>{{ p.clinic }}</span><span><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ p.years }} yrs experience</span><span><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="M16 10l5-3v10l-5-3"></path></svg>Telehealth</span></div>
+<div class="pmeta"><span><svg class="ic sm" viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M3 21h18M8 7h4M8 11h4M8 15h4"></path></svg>{{ p.clinic }}</span><span><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ p.yearsLbl }}</span><span><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="M16 10l5-3v10l-5-3"></path></svg>Telehealth</span></div>
 </div>
 <button class="btn btn-q" onClick="{{ p.profile }}">Profile</button>
 <button class="btn btn-p" onClick="{{ p.pick }}">Select Provider<svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
 </div>
 </sc-for>
 </div>
+<sc-if value="{{ prov.noDoctors }}" hint-placeholder-val="{{ false }}">
+<div class="card empty"><div class="et">No doctors at this clinic yet</div><div class="es">You can still book. The clinic will assign a doctor to your visit.</div><button class="btn btn-p" onClick="{{ prov.anyDoc }}">Book with the clinic</button></div>
+</sc-if>
 <sc-if value="{{ prov.none }}" hint-placeholder-val="{{ false }}">
 <div class="card empty"><div class="blob"><i></i><svg class="ic xl blob-ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></div><div class="et">No providers match “{{ prov.search }}”</div><button class="link" onClick="{{ prov.clear }}">Show best matches</button></div>
 </sc-if>
@@ -2586,7 +2613,7 @@ body,.app{background:#EDEEEB}
 <div><h1 class="h1 xl1">Intake analytics</h1><p class="sub">Completion, drop-off, channel and language trends across your practice.</p></div>
 <div class="dash-tools"><div class="fchips"><sc-for list="{{ an.ranges }}" as="r" hint-placeholder-count="3"><button class="fchip {{ r.cls }}" onClick="{{ r.pick }}">{{ r.label }}</button></sc-for></div><button class="btn" onClick="{{ an.exportCsv }}"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"></path></svg>Export CSV</button></div>
 </div>
-<div class="notice"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v5h1"></path></svg><span>Sample analytics for the prototype. Live numbers come from intake events once the platform is deployed.</span></div>
+<sc-if value="{{ an.isSample }}" hint-placeholder-val="{{ true }}"><div class="notice"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v5h1"></path></svg><span>Sample analytics for the prototype. Live numbers come from intake events once the platform is deployed.</span></div></sc-if><sc-if value="{{ an.isEmpty }}" hint-placeholder-val="{{ false }}"><div class="notice"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v5h1"></path></svg><span>No intakes or visits in this period yet. Numbers fill in as patients book, check in and submit intakes.</span></div></sc-if>
 <div class="kpis"><sc-for list="{{ an.kpis }}" as="k" hint-placeholder-count="4"><div class="kpi"><span class="kpi-v">{{ k.v }}</span><span class="kpi-l">{{ k.l }}</span></div></sc-for></div>
 <div class="bento">
 <div class="tile b2">
@@ -2599,15 +2626,15 @@ body,.app{background:#EDEEEB}
 </div>
 <div class="tile">
 <div class="tile-h"><span class="tile-t">Channel usage</span></div>
-<div class="hbars"><sc-for list="{{ an.channels }}" as="f" hint-placeholder-count="5"><div class="hb"><div class="hb-top"><span>{{ f.label }}</span><b>{{ f.v }}</b></div><div class="hb-track"><span class="hb-fill" style="width: {{ f.w }}%"></span></div></div></sc-for></div>
+<sc-if value="{{ an.noChannels }}" hint-placeholder-val="{{ false }}"><p class="small muted" style="margin: 0">No submitted intakes yet</p></sc-if><div class="hbars"><sc-for list="{{ an.channels }}" as="f" hint-placeholder-count="5"><div class="hb"><div class="hb-top"><span>{{ f.label }}</span><b>{{ f.v }}</b></div><div class="hb-track"><span class="hb-fill" style="width: {{ f.w }}%"></span></div></div></sc-for></div>
 </div>
 <div class="tile">
 <div class="tile-h"><span class="tile-t">Language</span></div>
-<div class="hbars"><sc-for list="{{ an.languages }}" as="f" hint-placeholder-count="5"><div class="hb"><div class="hb-top"><span>{{ f.label }}</span><b>{{ f.v }}</b></div><div class="hb-track"><span class="hb-fill" style="width: {{ f.w }}%"></span></div></div></sc-for></div>
+<sc-if value="{{ an.noLangs }}" hint-placeholder-val="{{ false }}"><p class="small muted" style="margin: 0">No submitted intakes yet</p></sc-if><div class="hbars"><sc-for list="{{ an.languages }}" as="f" hint-placeholder-count="5"><div class="hb"><div class="hb-top"><span>{{ f.label }}</span><b>{{ f.v }}</b></div><div class="hb-track"><span class="hb-fill" style="width: {{ f.w }}%"></span></div></div></sc-for></div>
 </div>
 <div class="tile">
 <div class="tile-h"><span class="tile-t">Where patients drop off</span></div>
-<div class="hbars"><sc-for list="{{ an.drops }}" as="f" hint-placeholder-count="5"><div class="hb"><div class="hb-top"><span>{{ f.label }}</span><b>{{ f.v }}</b></div><div class="hb-track"><span class="hb-fill warm" style="width: {{ f.w }}%"></span></div></div></sc-for></div>
+<sc-if value="{{ an.noDrops }}" hint-placeholder-val="{{ false }}"><p class="small muted" style="margin: 0">No unfinished intakes</p></sc-if><div class="hbars"><sc-for list="{{ an.drops }}" as="f" hint-placeholder-count="5"><div class="hb"><div class="hb-top"><span>{{ f.label }}</span><b>{{ f.v }}</b></div><div class="hb-track"><span class="hb-fill warm" style="width: {{ f.w }}%"></span></div></div></sc-for></div>
 </div>
 <div class="tile">
 <div class="tile-h"><span class="tile-t">Consent status</span></div>
@@ -2731,7 +2758,7 @@ body,.app{background:#EDEEEB}
 <section class="page">
 <div class="dash-head">
 <div><h1 class="h1 xl1">Clinic admin</h1><p class="sub">Accounts, sign-in, login pages, the lobby kiosk and platform settings for {{ adm.clinic }}.</p></div>
-<div class="dash-tools"><button class="btn btn-lg" onClick="{{ adm.openKiosk }}"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 18h6"></path></svg>Open kiosk</button><button class="btn btn-p btn-lg" onClick="{{ adm.addUser }}"><svg class="ic" viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"></circle><path d="M2 21a8 8 0 0 1 16 0M19 8v6M16 11h6"></path></svg>Add user</button></div>
+<div class="dash-tools"><button class="btn btn-lg" onClick="{{ go.platform }}">Platform and data</button><button class="btn btn-lg" onClick="{{ adm.openKiosk }}"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 18h6"></path></svg>Open kiosk</button><button class="btn btn-p btn-lg" onClick="{{ adm.addUser }}"><svg class="ic" viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"></circle><path d="M2 21a8 8 0 0 1 16 0M19 8v6M16 11h6"></path></svg>Add user</button></div>
 </div>
 <div class="kpis"><sc-for list="{{ adm.kpis }}" as="k" hint-placeholder-count="4"><button class="kpi kbtn" onClick="{{ k.fn }}"><span class="kpi-v">{{ k.v }}</span><span class="kpi-l">{{ k.l }}</span></button></sc-for></div>
 <div class="g2 adm-g">
@@ -2825,7 +2852,8 @@ body,.app{background:#EDEEEB}
 <div class="tile-h"><span class="tile-t">Sign-in methods</span><span class="small muted">At least one must stay on</span></div>
 <div class="list">
 <sc-for list="{{ lp.methods }}" as="m" hint-placeholder-count="3"><div class="row"><span class="rm"><span class="rt" style="display: block">{{ m.name }}</span><span class="rs" style="display: block">{{ m.desc }}</span></span><button class="sw {{ m.cls }}" aria-label="{{ m.name }}" aria-pressed="{{ m.on }}" onClick="{{ m.toggle }}"><span class="kn"></span></button></div></sc-for>
-<div class="row"><span class="rm"><span class="rt" style="display: block">Patients can create their own account</span><span class="rs" style="display: block">Shows "Create account" on the patient page. Care-team accounts are always created by an admin.</span></span><button class="sw {{ lp.signupCls }}" aria-label="Allow patient sign-up" aria-pressed="{{ lp.s.allowSignup }}" onClick="{{ lp.toggleSignup }}"><span class="kn"></span></button></div>
+<div class="row"><span class="rm"><span class="rt" style="display: block">Patients can create their own account</span><span class="rs" style="display: block">Shows "Create account" on the patient page. Staff accounts are created here in Users, or by doctors who have the clinic code below.</span></span><button class="sw {{ lp.signupCls }}" aria-label="Allow patient sign-up" aria-pressed="{{ lp.s.allowSignup }}" onClick="{{ lp.toggleSignup }}"><span class="kn"></span></button></div>
+<div class="row" style="flex-wrap: wrap"><span class="rm"><span class="rt" style="display: block">Doctor sign-up clinic code</span><span class="rs" style="display: block">{{ lp.codeHelp }}</span></span><span class="codebox"><input class="inp" value="{{ lp.code }}" onChange="{{ lp.onCode }}" placeholder="Off" aria-label="Doctor sign-up clinic code" maxlength="24" style="width: 150px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700"><button class="btn btn-q" onClick="{{ lp.genCode }}">Generate</button><sc-if value="{{ lp.hasCode }}" hint-placeholder-val="{{ false }}"><button class="btn btn-q" onClick="{{ lp.clearCode }}">Turn off</button></sc-if></span></div>
 </div>
 <div class="fgrid">
 <label class="field">Minimum password length<select class="sel" value="{{ lp.pwMin }}" onChange="{{ lp.onPwMin }}"><option value="8">8 characters</option><option value="10">10 characters</option><option value="12">12 characters</option><option value="14">14 characters</option></select></label>
@@ -2951,8 +2979,8 @@ body,.app{background:#EDEEEB}
 <sc-if value="{{ pg.builder }}" hint-placeholder-val="{{ false }}">
 <section class="page">
 <div class="ph"><div>
-<h1 class="h1">Design the intake every patient sees</h1>
-<div class="status"><span class="live"></span><span><b>ASQ-Health Global Intake</b> · Published, live for all patients · {{ bld.pubCount }} questions (published)</span><sc-if value="{{ bld.dirty }}" hint-placeholder-val="{{ false }}"><span class="chip c-amber">Unpublished changes</span></sc-if></div>
+<h1 class="h1">Intake form</h1><p class="sub" style="margin-top: 4px">Build the form every patient fills in, organized into sections. Doctors see answers grouped the same way.</p>
+<div class="status"><span class="live"></span><span><b>Published form</b> · live for all patients · {{ bld.pubCount }} questions in {{ bld.pubSecCount }} sections</span><sc-if value="{{ bld.dirty }}" hint-placeholder-val="{{ false }}"><span class="chip c-amber">Unpublished changes</span></sc-if></div>
 </div></div>
 <div class="paths stagger">
 <div class="card path {{ bld.manualCls }}"><span class="ib ib-blue"><svg class="ic lg" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"></path><path d="M13 7l4 4"></path></svg></span><div class="pbody"><div class="h2">Build Intake Manually</div><div class="small muted" style="line-height: 1.5">Start from a template, then edit questions, answer types and conditional logic.</div><div style="margin-top: 8px"><button class="btn btn-p" onClick="{{ bld.toggleOpen }}">{{ bld.openLabel }}</button></div></div></div>
@@ -2989,7 +3017,18 @@ body,.app{background:#EDEEEB}
 <div class="bgrid">
 <div class="col" style="gap: 12px">
 <div class="ch" style="margin: 0"><div><h2 class="h2">Workflow Questions</h2><div class="small muted" style="margin-top: 3px">Drag the handle or use the arrows to reorder.</div></div><button class="btn btn-sm" onClick="{{ bld.addQ }}"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>Add Question</button></div>
-<sc-for list="{{ bld.qs }}" as="q" hint-placeholder-count="5">
+<sc-for list="{{ bld.secs }}" as="sec" hint-placeholder-count="2">
+<div class="bsec" id="bsec-{{ sec.id }}">
+<div class="bsec-h">
+<span class="bsec-n">{{ sec.num }}</span>
+<div class="bsec-f"><input class="inp bsec-t" value="{{ sec.title }}" onChange="{{ sec.onTitle }}" aria-label="Section title"><input class="inp bsec-d" value="{{ sec.desc }}" onChange="{{ sec.onDesc }}" placeholder="Short description patients see (optional)" aria-label="Section description"></div>
+<span class="chip">{{ sec.count }} questions</span>
+<button class="icon-btn" aria-label="Move section up" disabled="{{ sec.isFirst }}" onClick="{{ sec.up }}"><svg class="ic" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></button>
+<button class="icon-btn" aria-label="Move section down" disabled="{{ sec.isLast }}" onClick="{{ sec.down }}"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></button>
+<button class="icon-btn danger" aria-label="Delete section" disabled="{{ sec.only }}" onClick="{{ sec.del }}"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg></button>
+</div>
+<sc-if value="{{ sec.empty }}" hint-placeholder-val="{{ false }}"><div class="bsec-empty">No questions in this section yet. Add one, or move a question here with its Section menu.</div></sc-if>
+<sc-for list="{{ sec.qs }}" as="q" hint-placeholder-count="3">
 <div class="ed {{ q.cls }}" id="qcard-{{ q.id }}" onDragOver="{{ q.dragOver }}" onDrop="{{ q.drop }}" onClick="{{ q.select }}">
 <div class="edt">
 <span class="handle" draggable="true" onDragStart="{{ q.dragStart }}" onDragEnd="{{ q.dragEnd }}" title="Drag to reorder"><svg class="ic" viewBox="0 0 24 24"><circle class="icf" cx="9" cy="6" r="1.4"></circle><circle class="icf" cx="15" cy="6" r="1.4"></circle><circle class="icf" cx="9" cy="12" r="1.4"></circle><circle class="icf" cx="15" cy="12" r="1.4"></circle><circle class="icf" cx="9" cy="18" r="1.4"></circle><circle class="icf" cx="15" cy="18" r="1.4"></circle></svg></span>
@@ -3001,6 +3040,7 @@ body,.app{background:#EDEEEB}
 </div>
 <div class="edr">
 <label class="mini">Answer type<select class="sel" value="{{ q.type }}" onChange="{{ q.onType }}"><option value="text">Text</option><option value="date">Date</option><option value="choice">Multiple Choice</option><option value="yesno">Yes / No</option></select></label>
+<label class="mini">Section<select class="sel" value="{{ q.sec }}" onChange="{{ q.onSec }}"><sc-for list="{{ bld.secOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.title }}</option></sc-for></select></label>
 <div class="swr"><button class="sw {{ q.reqCls }}" aria-label="Mandatory" aria-pressed="{{ q.required }}" onClick="{{ q.toggleReq }}"><span class="kn"></span></button><span>Mandatory</span></div>
 </div>
 <sc-if value="{{ q.isChoice }}" hint-placeholder-val="{{ false }}">
@@ -3036,7 +3076,10 @@ body,.app{background:#EDEEEB}
 </div>
 </div>
 </sc-for>
-<button class="btn w100" style="border-style: dashed; min-height: 52px" onClick="{{ bld.addQ }}"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>Add Question</button>
+<button class="link" onClick="{{ sec.addQ }}"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>Add question to this section</button>
+</div>
+</sc-for>
+<button class="btn w100" style="border-style: dashed; min-height: 52px" onClick="{{ bld.addSec }}"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>Add section</button>
 </div>
 <div class="card flowp">
 <div class="ch" style="margin-bottom: 10px"><div><h2 class="h2">Decision Tree Preview</h2><div class="small muted" style="margin-top: 3px">Click a node to jump to its question.</div></div><span class="counter">{{ bld.branchCount }} branch</span></div>
@@ -3148,7 +3191,7 @@ body,.app{background:#EDEEEB}
 <sc-if value="{{ md.isProv }}" hint-placeholder-val="{{ false }}">
 <p style="margin: 0; line-height: 1.55; color: #27272A">{{ md.bio }}</p>
 <div><div class="lbl">Next available</div><div class="fchips"><sc-for list="{{ md.slots }}" as="t" hint-placeholder-count="3"><button class="fchip" onClick="{{ t.pick }}">{{ t.label }}</button></sc-for></div></div>
-<div><div class="lbl">Sample reviews (prototype data)</div><div class="list"><sc-for list="{{ md.reviews }}" as="r" hint-placeholder-count="2"><div class="row" style="align-items: flex-start"><span class="rm"><span class="stars" style="margin: 0">{{ r.stars }}</span><span class="rs" style="display: block; color: #27272A; margin-top: 4px">{{ r.text }}</span><span class="rs" style="display: block">{{ r.who }}</span></span></div></sc-for></div></div>
+<sc-if value="{{ md.hasReviews }}" hint-placeholder-val="{{ true }}"><div><div class="lbl">Sample reviews (prototype data)</div><div class="list"><sc-for list="{{ md.reviews }}" as="r" hint-placeholder-count="2"><div class="row" style="align-items: flex-start"><span class="rm"><span class="stars" style="margin: 0">{{ r.stars }}</span><span class="rs" style="display: block; color: #27272A; margin-top: 4px">{{ r.text }}</span><span class="rs" style="display: block">{{ r.who }}</span></span></div></sc-for></div></div></sc-if>
 <div class="m-acts"><button class="btn btn-p" onClick="{{ md.book }}">Book with this doctor</button><button class="btn" onClick="{{ md.close }}">Close</button></div>
 </sc-if>
 <sc-if value="{{ md.isFlags }}" hint-placeholder-val="{{ false }}">
@@ -3250,7 +3293,7 @@ body,.app{background:#EDEEEB}
 <sc-if value="{{ kv.multiLang }}" hint-placeholder-val="{{ true }}"><div class="k-lang" role="group" aria-label="Language"><sc-for list="{{ kv.langs }}" as="l" hint-placeholder-count="2"><button class="{{ l.cls }}" onClick="{{ l.pick }}">{{ l.label }}</button></sc-for></div></sc-if>
 <button class="btn btn-sm" onClick="{{ kv.toggleBig }}" aria-label="{{ kv.t.bigText }}">{{ kv.t.bigText }}</button>
 <button class="btn btn-sm" onClick="{{ kv.help }}"><svg class="ic sm" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>{{ kv.t.callStaff }}</button>
-<button class="btn btn-sm btn-q" onClick="{{ kv.staff }}" aria-label="Staff menu"><svg class="ic sm" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></button>
+<button class="btn btn-sm btn-q" onClick="{{ kv.staff }}" aria-label="{{ kv.staffLabel }}" title="{{ kv.staffLabel }}"><svg class="ic sm" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></button>
 </div>
 </div>
 <sc-if value="{{ kv.hasSteps }}" hint-placeholder-val="{{ false }}"><div class="k-prog"><sc-for list="{{ kv.steps }}" as="x" hint-placeholder-count="4"><span class="{{ x.cls }}"><i></i>{{ x.label }}</span></sc-for></div></sc-if>
@@ -3418,6 +3461,29 @@ const SPEC_COLOR = {};
 
 function mkQ(id, text, type, required, options, cond) {
   return { id: id, text: text, type: type, required: !!required, options: options || [], cond: cond || null };
+}
+const SECTIONS0 = [
+  { id: 'demo', title: 'Demographics', desc: 'Who you are and how to reach you' },
+  { id: 'visit', title: 'Reason for visit', desc: 'What brings you in today' },
+  { id: 'hist', title: 'Medical history', desc: 'Past conditions, surgeries and care plans' },
+  { id: 'meds', title: 'Medications and allergies', desc: 'What you take and what you react to' },
+  { id: 'ins', title: 'Insurance', desc: 'Coverage details for your visit' },
+  { id: 'life', title: 'Lifestyle', desc: 'Habits that affect your care' }
+];
+function guessSec(q) {
+  const t = String(q.text || '').toLowerCase();
+  if (/insurance|member id|payer|coverage/.test(t)) return 'ins';
+  if (/allerg|medication|blood thinner|dose|prescri|anesthesia/.test(t)) return 'meds';
+  if (/smok|tobacco|alcohol|sun exposure|exercise|diet/.test(t)) return 'life';
+  if (/name|birth|gender|guardian|address|phone|emergency contact|email/.test(t)) return 'demo';
+  if (/surgery|history|directive|vaccinat|imaging|x-ray|mri|condition|blood pressure/.test(t)) return 'hist';
+  return 'visit';
+}
+function withSecs(qs, secs) {
+  secs = secs && secs.length ? secs : SECTIONS0;
+  const ids = secs.map(function (x) { return x.id; });
+  const out = (qs || []).map(function (q) { if (q.sec && ids.indexOf(q.sec) >= 0) return q; const g = guessSec(q); return Object.assign({}, q, { sec: ids.indexOf(g) >= 0 ? g : ids[0] }); });
+  return out.map(function (q, i) { return { q: q, i: i }; }).sort(function (a, b) { return (ids.indexOf(a.q.sec) - ids.indexOf(b.q.sec)) || (a.i - b.i); }).map(function (x) { return x.q; });
 }
 function baseQuestions() {
   return [
@@ -3692,13 +3758,14 @@ function clockNow() { const d = new Date(); return (d.getHours() % 12 || 12) + '
 
 const PERSONAL_P = ['appointments', 'intakes', 'hrLoaded', 'hrSynced', 'profile', 'preferred', 'consent', 'ins', 'notifs', 'answers', 'lang'];
 const PERSONAL_S = ['appointments', 'intakes', 'hrLoaded', 'hrSynced', 'profile', 'doctor', 'preferred', 'consent', 'ins', 'answers', 'lang'];
-const CLINIC_KEYS = ['docAppts', 'qstate', 'records', 'published', 'draft', 'activeTpl', 'settings', 'auditLog', 'notifs'];
+const CLINIC_KEYS = ['docAppts', 'qstate', 'records', 'published', 'draft', 'sections', 'draftSecs', 'activeTpl', 'settings', 'auditLog', 'notifs'];
 /* ---------- v6: admin, sign-in, kiosk, live doctor search ---------- */
-const ROLE_ORDER = ['patient', 'doctor', 'admin'];
+const ROLE_ORDER = ['patient', 'doctor', 'admin', 'kiosk'];
+const VIEWS_BY_ROLE = { patient: ['patient', 'kiosk'], doctor: ['doctor', 'admin', 'kiosk'], admin: ['doctor', 'admin', 'kiosk'], kiosk: ['kiosk'] };
 const ROLE_META = {
   patient: { label: 'Patient', cls: 'c-ai', desc: 'Intake, bookings and records' },
-  doctor: { label: 'Doctor', cls: 'c-green', desc: 'Schedule, queue, intakes, builder' },
-  admin: { label: 'Admin', cls: 'c-dark', desc: 'Everything, plus users and settings' },
+  doctor: { label: 'Doctor', cls: 'c-green', desc: 'Doctor and admin views, plus kiosk' },
+  admin: { label: 'Admin', cls: 'c-dark', desc: 'Same as doctor. Use for office managers' },
   kiosk: { label: 'Kiosk', cls: 'c-amber', desc: 'Lobby tablet check-in only' }
 };
 function isoAgo(days, h) { const d = new Date(); d.setDate(d.getDate() - days); d.setHours(h == null ? 9 : h, 12, 0, 0); return d.toISOString(); }
@@ -3722,7 +3789,7 @@ const ADMIN_AUDIT0 = [
 ];
 const SITE0 = {
   clinicName: 'Ghadiali Healthcare Center', supportPhone: '(555) 010-2040', accent: '#0F766E',
-  methods: { password: true, microsoft: true, github: true }, allowSignup: true, passwordMin: 8, sessionHours: 12, lockout: 5,
+  methods: { password: true, microsoft: true, github: true }, allowSignup: true, doctorCode: '', passwordMin: 8, sessionHours: 12, lockout: 5,
   announcement: '', maintenance: false,
   portals: {
     patient: { headline: 'Your care, ready before you arrive', sub: 'Complete your intake, book visits and see your records in one secure place.', bullets: ['Finish your intake from home in a few minutes', 'Book in-person or video visits', 'Check in at the lobby kiosk in seconds'], cta: 'Sign in' },
@@ -3821,7 +3888,7 @@ class Component extends DCLogic {
         { id: 'd11', patient: 'Chloe Dubois', reason: 'Pathology results review', date: addDays(4), time: '3:15 PM', type: 'telehealth', status: 'scheduled' },
         { id: 'd12', patient: 'Ethan Brooks', reason: 'Second opinion, imaging', date: addDays(5), time: '11:15 AM', type: 'inperson', status: 'scheduled' }
       ],
-      published: baseQuestions(), draft: baseQuestions(), builderOpen: true, activeTpl: 'general',
+      published: withSecs(baseQuestions(), SECTIONS0), draft: withSecs(baseQuestions(), SECTIONS0), sections: clone(SECTIONS0), draftSecs: clone(SECTIONS0), builderOpen: true, activeTpl: 'general', clinicDoctors: null,
       docFlow: null, condMenu: null, dragId: null, overId: null, selectedQ: null,
       recSearch: '', recOpen: 'r1', exporting: null,
       pDay: 0, dDay: 0, aiText: '', aiReply: '', aiAsked: '', hdrQ: '',
@@ -3871,19 +3938,19 @@ class Component extends DCLogic {
       location.replace(path === '/kiosk' ? '/doctor?next=/kiosk' + (reason ? '&' + reason : '') : '/login' + (reason ? '?' + reason : ''));
       return;
     }
-    if (!me.ok) { this.setState({ apiDown: me.status === 404 ? 'missing' : 'error' }); return; }
+    if (!me.ok) { let h = { status: 0 }; try { h = await this.api('GET', '/api/health'); } catch (e) {} this.setState({ apiDown: (me.status === 404 || me.status === 403 || h.status === 404) ? 'missing' : 'error', apiCode: me.status }); return; }
     const user = me.data.user; const via = me.data.via;
     if (user.mustChange && via === 'password') { location.replace((user.role === 'patient' ? '/patient' : '/doctor') + '?next=' + encodeURIComponent(path || '/')); return; }
-    const roles = user.role === 'admin' ? ['patient', 'doctor', 'admin'] : user.role === 'kiosk' ? [] : [user.role];
+    const roles = me.data.views || VIEWS_BY_ROLE[user.role] || [];
     const site = Object.assign({}, SITE0, me.data.site || {}, { kiosk: Object.assign({}, SITE0.kiosk, (me.data.site || {}).kiosk || {}) });
-    const startRole = user.role === 'admin' ? (path === '/admin' ? 'admin' : 'admin') : user.role === 'kiosk' ? 'doctor' : user.role;
+    const startRole = user.role === 'patient' ? 'patient' : user.role === 'kiosk' ? 'doctor' : (path === '/admin' || user.role === 'admin' ? 'admin' : 'doctor');
     this.setState((s) => ({
       cloud: Object.assign({}, s.cloud, { on: true, status: 'loading', user: user, via: via, roles: roles }),
       role: startRole, page: 'dashboard', site: site, loggedOut: false,
       profile: Object.assign({}, s.profile, { first: user.first || s.profile.first, last: user.last || '', mobile: user.phone || s.profile.mobile, dob: user.dob || s.profile.dob }),
-      doctor: user.role === 'patient' ? s.doctor : Object.assign({}, s.doctor, { clinic: site.clinicName || s.doctor.clinic })
+      doctor: user.role === 'patient' ? s.doctor : Object.assign({ specialty: '', fee: '', years: '', tele: true, bio: '' }, user.doctor || {}, { clinic: (user.doctor && user.doctor.clinic) || site.clinicName || '' })
     }));
-    const kioskMode = user.role === 'kiosk' || (path === '/kiosk' && user.role !== 'patient');
+    const kioskMode = user.role === 'kiosk' || path === '/kiosk';
     try {
       if (user.role === 'kiosk' || kioskMode) {
         const cfg = await this.api('GET', '/api/kiosk/config');
@@ -3891,12 +3958,13 @@ class Component extends DCLogic {
       }
       if (user.role !== 'kiosk') {
         const r = await this.api('GET', '/api/state');
+        if (r.status === 204 && user.role !== 'patient') this.setState({ appointments: [], intakes: [], hrLoaded: false });
         if (r.status === 200) { const patch = {}; this.personalKeys().forEach(function (k) { if (r.data[k] !== undefined) patch[k] = r.data[k]; }); if (r.data.profile) patch.profile = Object.assign({}, r.data.profile, { first: r.data.profile.first || user.first, last: r.data.profile.last || user.last }); this.setState(patch); }
         else if (r.status !== 204) throw new Error('state ' + r.status);
         if (user.role === 'patient') {
           if (r.status === 204) this.setState({ appointments: [], intakes: [], notifs: [], hrLoaded: false, consent: Object.assign({}, this.state.consent, { signedAt: '', typed: '' }) });
           const pub = await this.api('GET', '/api/clinic/public');
-          if (pub.ok) { const P = {}; if (pub.data.published) P.published = pub.data.published; if (pub.data.settings) P.settings = Object.assign({}, this.state.settings, pub.data.settings); this.setState(P); }
+          if (pub.ok) { const P = {}; if (pub.data.sections) P.sections = pub.data.sections; if (pub.data.published) P.published = withSecs(pub.data.published, pub.data.sections || this.state.sections); if (pub.data.settings) P.settings = Object.assign({}, this.state.settings, pub.data.settings); this.setState(P); }
         }
       }
       if (user.role === 'doctor' || user.role === 'admin') {
@@ -3904,10 +3972,15 @@ class Component extends DCLogic {
         if (!c.ok) throw new Error('clinic ' + c.status);
         this.clinicEtag = c.data.etag;
         if (c.data.data) this.applyClinic(c.data.data);
-        else { const seed = await this.api('PUT', '/api/clinic', { data: this.pick(CLINIC_KEYS, this.state), etag: null }); if (seed.ok) this.clinicEtag = seed.data.etag; }
+        else {
+          const fresh = { docAppts: [], qstate: {}, records: [], notifs: [], auditLog: [], published: withSecs(baseQuestions(), SECTIONS0), draft: withSecs(baseQuestions(), SECTIONS0), sections: clone(SECTIONS0), draftSecs: clone(SECTIONS0), activeTpl: 'general', settings: this.state.settings };
+          this.setState(fresh);
+          const seed = await this.api('PUT', '/api/clinic', { data: fresh, etag: null }); if (seed.ok) this.clinicEtag = seed.data.etag;
+        }
         this.clinicPoll = setInterval(() => this.cloudPoll(), 20000);
       }
-      if (user.role === 'admin') this.adminLoad();
+      if (user.role === 'admin' || user.role === 'doctor') this.adminLoad();
+      if (user.role !== 'kiosk') this.loadClinicDoctors();
       this.cloudReady = true;
       this.lastP = this.pick(this.personalKeys(), this.state); this.lastC = this.pick(this.clinicKeys(), this.state);
       this.setState((s) => ({ cloud: Object.assign({}, s.cloud, { status: 'saved', at: clockNow() }) }));
@@ -3919,6 +3992,10 @@ class Component extends DCLogic {
   }
   applyClinic(d) {
     const patch = {}; CLINIC_KEYS.forEach(function (k) { if (d[k] !== undefined && d[k] !== null) patch[k] = d[k]; });
+    if (!patch.sections && patch.published) patch.sections = clone(this.state.sections || SECTIONS0);
+    if (!patch.draftSecs && patch.draft) patch.draftSecs = clone(patch.sections || this.state.draftSecs || SECTIONS0);
+    if (patch.published) patch.published = withSecs(patch.published, patch.sections || this.state.sections);
+    if (patch.draft) patch.draft = withSecs(patch.draft, patch.draftSecs || this.state.draftSecs);
     this.setState(patch);
     this.lastC = Object.assign({}, this.lastC || {}, patch);
   }
@@ -3980,6 +4057,27 @@ class Component extends DCLogic {
     this.toast('Password changed');
   }
 
+  providers() {
+    if (!this.state.cloud.on) return PROVIDERS;
+    const site = this.state.site || SITE0;
+    return (this.state.clinicDoctors || []).map(function (d) { return { id: d.id, name: d.name, specialty: d.specialty || 'General Medicine', clinic: d.clinic || site.clinicName, years: d.years || 0, kw: (d.specialty || '') + ' ' + (d.bio || ''), bio: d.bio, live: true, tele: d.tele }; });
+  }
+  async saveProfile(withDoctor) {
+    const s = this.state;
+    if (!s.cloud.on) { this.toast(withDoctor ? 'Doctor profile updated' : 'Profile saved'); return; }
+    const p = s.profile || {}; const d = s.doctor || {};
+    const body = { first: String(p.first || ''), last: String(p.last || ''), phone: String(p.mobile || ''), dob: String(p.dob || '') };
+    if (withDoctor) body.doctor = { specialty: d.specialty, clinic: d.clinic, fee: d.fee, years: d.years, tele: d.tele, bio: d.bio || '' };
+    const r = await this.api('PUT', '/api/me/profile', body).catch(function () { return { ok: false, data: {} }; });
+    if (!r.ok) { this.toast((r.data && r.data.error) || 'Could not save your profile. Try again.'); return; }
+    this.setState((x) => ({ cloud: Object.assign({}, x.cloud, { user: Object.assign({}, x.cloud.user, r.data.user) }) }));
+    this.toast(withDoctor ? 'Doctor profile saved. Patients see it when they pick a doctor.' : 'Profile saved to your account');
+    if (withDoctor) this.loadClinicDoctors();
+  }
+  async loadClinicDoctors() {
+    const r = await this.api('GET', '/api/clinic/doctors').catch(function () { return { ok: false }; });
+    if (r.ok) this.setState({ clinicDoctors: r.data.doctors });
+  }
   /* ---------- admin ---------- */
   admSet(patch) { this.setState((s) => ({ adm: Object.assign({}, s.adm, typeof patch === 'function' ? patch(s.adm) : patch) })); }
   admLog(action) { const who = (this.state.cloud.user && this.state.cloud.user.email) || 'taha.ghadiali@netweb.biz'; this.admSet((a) => ({ audit: [{ at: new Date().toISOString(), actor: who, action: action }].concat(a.audit).slice(0, 300) })); }
@@ -4039,11 +4137,12 @@ class Component extends DCLogic {
   }
   adminGuard(target, patch) {
     const meId = this.state.cloud.on && this.state.cloud.user ? this.state.cloud.user.id : 'u1';
-    const admins = this.state.adm.users.filter(function (x) { return x.role === 'admin' && x.status === 'active'; });
-    const lastAdmin = target.role === 'admin' && target.status === 'active' && admins.length <= 1;
-    if (patch === 'delete') { if (target.id === meId) return 'You cannot delete your own account.'; if (lastAdmin) return 'Keep at least one active admin.'; return null; }
+    const admins = this.state.adm.users.filter(function (x) { return (x.role === 'admin' || x.role === 'doctor') && x.status === 'active'; });
+    const isStaffR = function (r) { return r === 'admin' || r === 'doctor'; };
+    const lastAdmin = isStaffR(target.role) && target.status === 'active' && admins.length <= 1;
+    if (patch === 'delete') { if (target.id === meId) return 'You cannot delete your own account.'; if (lastAdmin) return 'Keep at least one active doctor or admin.'; return null; }
     if (target.id === meId && patch.status === 'disabled') return 'You cannot disable your own account.';
-    if (lastAdmin && (patch.role !== 'admin' || patch.status === 'disabled')) return 'Keep at least one active admin.';
+    if (lastAdmin && (!isStaffR(patch.role) || patch.status === 'disabled')) return 'Keep at least one active doctor or admin.';
     return null;
   }
   async adminToggle(u) {
@@ -4093,6 +4192,7 @@ class Component extends DCLogic {
     if (!d.methods.password && !d.methods.microsoft && !d.methods.github) { this.toast('Keep at least one sign-in method turned on'); return; }
     if (!/^\d{4,8}$/.test(String(d.kiosk.pin))) { this.toast('Kiosk PIN must be 4 to 8 digits'); return; }
     if (!/^#[0-9a-fA-F]{6}$/.test(d.accent)) { this.toast('Accent color must look like #0F766E'); return; }
+    if (d.doctorCode && String(d.doctorCode).length < 6) { this.toast('Clinic code must be at least 6 letters or numbers, or turned off'); return; }
     this.admSet({ saving: true });
     if (this.state.cloud.on) {
       const r = await this.api('PUT', '/api/admin/site', d);
@@ -4596,7 +4696,7 @@ class Component extends DCLogic {
       this.toast('No results for "' + q + '"');
       return;
     }
-    const p = PROVIDERS.find(function (x) { return (x.name + ' ' + x.specialty + ' ' + x.clinic).toLowerCase().indexOf(t) >= 0; });
+    const p = this.providers().find(function (x) { return (x.name + ' ' + x.specialty + ' ' + x.clinic).toLowerCase().indexOf(t) >= 0; });
     if (p && !/record|profile|appoint/.test(t)) { this.go('nearby'); this.setState({ nearSel: p.name.toLowerCase().indexOf(t) >= 0 ? p.id : null, nearSpec: p.name.toLowerCase().indexOf(t) >= 0 ? 'All' : p.specialty, nearDist: 25, nearOpen: false }); return; }
     if (/record|lab|allerg/.test(t)) { this.go('records'); return; }
     if (/appoint|visit|schedul/.test(t)) { this.go('appointments'); return; }
@@ -4696,7 +4796,7 @@ class Component extends DCLogic {
     const ans = this.fillAnswers();
     const text = this.visibleQs(ans).filter(function (q) { return q.type === 'text'; }).map(function (q) { return ans[q.id] || ''; }).join(' ');
     const sp = deriveSpecialty(text).spec;
-    const prov = PROVIDERS.find(function (x) { return x.specialty === sp; }) || PROVIDERS[0];
+    const PV = this.providers(); const prov = PV.find(function (x) { return x.specialty === sp; }) || PV[0] || { id: null };
     const base = { answers: ans, role: 'patient', page: 'asq', mode: 'form', confirmed: false, demoOpen: false, modal: null, switching: false };
     if (toSchedule) this.setState(Object.assign(base, { step: 4, provider: prov.id, dateIdx: null, time: null, visitType: 'inperson' }));
     else this.setState(Object.assign(base, { step: 1 }));
@@ -4728,6 +4828,7 @@ class Component extends DCLogic {
     this.top();
   }
   switchRole(to, page) {
+    if (to === 'kiosk') { if (this.state.cloud.on && (this.state.cloud.roles || []).indexOf('kiosk') < 0) return; this.openKiosk(false); return; }
     if (this.state.cloud.on && (this.state.cloud.roles || []).indexOf(to) < 0) { this.setState({ userMenu: false }); this.toast('Your account does not have access to the ' + to + ' view. Ask a clinic admin.'); return; }
     if (to === this.state.role) { this.setState({ userMenu: false }); if (page) this.go(page); return; }
     this.setState({ switching: true, userMenu: false });
@@ -4741,7 +4842,7 @@ class Component extends DCLogic {
       return String(answers[q.cond.q] || '').trim().toLowerCase() === String(q.cond.value || '').trim().toLowerCase();
     });
   }
-  setAnswer(id, v) { this.setState((s) => ({ answers: Object.assign({}, s.answers, { [id]: v }), pref: s.pref[id] && !s.pref[id].ok ? Object.assign({}, s.pref, { [id]: Object.assign({}, s.pref[id], { ok: true }) }) : s.pref })); }
+  setAnswer(id, v) { if (!this.intakeT0) this.intakeT0 = Date.now(); this.setState((s) => ({ answers: Object.assign({}, s.answers, { [id]: v }), pref: s.pref[id] && !s.pref[id].ok ? Object.assign({}, s.pref, { [id]: Object.assign({}, s.pref[id], { ok: true }) }) : s.pref })); }
   mockAnswer(q) {
     if (MOCK[q.id] !== undefined) return MOCK[q.id];
     if (q.type === 'date') return '1990-01-01';
@@ -4837,7 +4938,7 @@ class Component extends DCLogic {
   confirm() {
     const s = this.state;
     if (s.dateIdx === null || !s.time) return;
-    const p = PROVIDERS.find(function (x) { return x.id === s.provider; });
+    const p = this.providers().find(function (x) { return x.id === s.provider; }) || { name: 'Your care team', specialty: '', clinic: (s.site || SITE0).clinicName };
     const day = this.nextDays()[s.dateIdx];
     const id = 'a' + Date.now();
     const spec = this.specialist();
@@ -4845,7 +4946,7 @@ class Component extends DCLogic {
     const qa = this.visibleQs(s.answers).filter((q) => filled(s.answers[q.id])).map((q) => ({ q: q.text, a: this.display(q, s.answers[q.id]) }));
     const modeLbl = s.mode === 'voice' ? 'Voice' : 'Form';
     const fullName = (s.profile.first + ' ' + s.profile.last).trim() || 'Taha Ghadiali';
-    const rec = { id: 'r' + Date.now(), name: fullName, visit: s.visitType === 'telehealth' ? 'Telehealth' : 'In-Person', workflow: 'ASQ-Health Global Intake', date: isoOf(new Date()), mode: modeLbl, isNew: true,
+    const rec = { id: 'r' + Date.now(), name: fullName, visit: s.visitType === 'telehealth' ? 'Telehealth' : 'In-Person', workflow: 'ASQ-Health Global Intake', date: isoOf(new Date()), mode: modeLbl, isNew: true, lang: s.lang || 'English', secs: this.intakeT0 && Date.now() - this.intakeT0 < 3 * 3600000 ? Math.round((Date.now() - this.intakeT0) / 1000) : null,
       fields: qa.slice(0, 9).map(function (x) { return [x.q.replace(/\s*\(Problem 1\)/, ''), x.a]; }), summary: summary };
     const dref = 'dx' + Date.now();
     const insS = s.ins.status === 'active' ? 'verified' : s.ins.status === 'failed' ? 'failed' : (s.answers.q4 === 'No' ? 'self' : 'pending');
@@ -4873,12 +4974,27 @@ class Component extends DCLogic {
     if (this.state.cloud.on && this.state.cloud.user && this.state.cloud.user.role === 'patient') setTimeout(() => this.cloudBook(dref), 50);
   }
   newIntake() {
+    this.intakeT0 = 0;
     clearInterval(this.ehrT); clearTimeout(this.voiceT); clearInterval(this.typer);
     this.setState({ step: 1, mode: null, answers: {}, voice: { status: 'idle', speaking: null, current: null, lastId: null, transcript: [] }, provider: null, dateIdx: null, time: null, confirmed: false, ehrStep: 0, provSearch: '', page: 'asq', preferred: null, pref: {}, hie: { status: 'idle', step: 0 }, ins: { status: 'none' }, ivr: { status: 'idle', digits: '', log: [] }, consent: { agreed: {}, open: {}, drawn: false, typed: '', guardian: '', signedAt: '' }, pre: { status: 'idle', step: 0, scan: 0, vitals: null } });
     this.top();
   }
 
-  updDraft(fn) { this.setState((s) => ({ draft: fn(clone(s.draft)) })); }
+  updDraft(fn) { this.setState((s) => ({ draft: withSecs(fn(clone(s.draft)), s.draftSecs) })); }
+  updSecs(fn) { this.setState((s) => { const secs = fn(clone(s.draftSecs)); return { draftSecs: secs, draft: withSecs(s.draft, secs) }; }); }
+  addSec() {
+    const id = 's' + Date.now().toString(36);
+    this.updSecs(function (x) { return x.concat([{ id: id, title: 'New section', desc: '' }]); });
+    setTimeout(function () { const el = document.getElementById('bsec-' + id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 90);
+  }
+  moveSec(id, dir) { this.updSecs(function (x) { const i = x.findIndex(function (z) { return z.id === id; }); const j = i + dir; if (j < 0 || j >= x.length) return x; const t = x[i]; x[i] = x[j]; x[j] = t; return x; }); }
+  delSec(id) {
+    const secs = this.state.draftSecs; if (secs.length <= 1) { this.toast('Keep at least one section'); return; }
+    const i = secs.findIndex(function (z) { return z.id === id; }); const to = secs[i === 0 ? 1 : i - 1];
+    this.setState((s) => { const ns = s.draftSecs.filter(function (z) { return z.id !== id; }); return { draftSecs: ns, draft: withSecs(s.draft.map(function (q) { return q.sec === id ? Object.assign({}, q, { sec: to.id }) : q; }), ns) }; });
+    this.toast('Section removed. Its questions moved to ' + to.title);
+  }
+  secSet(id, k, v) { this.updSecs(function (x) { return x.map(function (z) { return z.id === id ? Object.assign({}, z, { [k]: v }) : z; }); }); }
   updQ(id, patch) { this.updDraft(function (d) { return d.map(function (q) { return q.id === id ? Object.assign({}, q, patch) : q; }); }); }
   moveQ(id, dir) {
     this.updDraft(function (d) { const i = d.findIndex(function (q) { return q.id === id; }); const j = i + dir; if (j < 0 || j >= d.length) return d; const t = d[i]; d[i] = d[j]; d[j] = t; return d; });
@@ -4888,9 +5004,10 @@ class Component extends DCLogic {
     this.updDraft(function (d) { return d.filter(function (q) { return q.id !== id; }).map(function (q) { return q.cond && q.cond.q === id ? Object.assign({}, q, { cond: null }) : q; }); });
     this.toast('Question removed from draft');
   }
-  addQ() {
+  addQ(secId) {
     const id = 'n' + Date.now().toString(36);
-    this.updDraft(function (d) { return d.concat([mkQ(id, 'New question', 'text', false)]); });
+    const sec = secId || (this.state.draftSecs[this.state.draftSecs.length - 1] || {}).id;
+    this.updDraft(function (d) { return d.concat([Object.assign(mkQ(id, 'New question', 'text', false), { sec: sec })]); });
     this.setState({ selectedQ: id });
     setTimeout(function () { const el = document.getElementById('qcard-' + id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 90);
   }
@@ -4920,6 +5037,7 @@ class Component extends DCLogic {
       const i = d.findIndex(function (q) { return q.id === from; });
       const j0 = d.findIndex(function (q) { return q.id === target; });
       const item = d.splice(i, 1)[0];
+      const tq0 = d.find(function (q) { return q.id === target; }); if (tq0) item.sec = tq0.sec;
       let j = d.findIndex(function (q) { return q.id === target; });
       if (i < j0) j = j + 1;
       d.splice(j, 0, item);
@@ -4932,8 +5050,8 @@ class Component extends DCLogic {
     const el = document.getElementById('qcard-' + id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-  loadTemplate(t) { this.setState({ draft: t.build(), activeTpl: t.key, selectedQ: null, condMenu: null }); this.toast(t.name + ' loaded. Publish to make it live'); }
-  publish() { this.setState((s) => ({ published: clone(s.draft), answers: {} })); this.toast('Workflow published and live for all patients'); }
+  loadTemplate(t) { this.setState((s) => ({ draft: withSecs(t.build(), s.draftSecs), activeTpl: t.key, selectedQ: null, condMenu: null })); this.toast(t.name + ' loaded. Publish to make it live'); }
+  publish() { this.setState((s) => ({ published: clone(s.draft), sections: clone(s.draftSecs), answers: {} })); this.toast('Intake form published. Patients see it right away'); this.audit('Published the intake form (' + this.state.draft.length + ' questions in ' + this.state.draftSecs.length + ' sections)'); }
   startDoc(name) {
     clearInterval(this.docT);
     this.setState({ docFlow: { phase: 'busy', name: name, pct: 0 } });
@@ -4955,12 +5073,15 @@ class Component extends DCLogic {
     const today = isoOf(new Date());
     const ease = 1 - Math.pow(1 - s.countT, 3);
     const n = function (v) { return Math.round(v * ease); };
-    const pages = isP ? ['dashboard', 'asq', 'nearby', 'appointments', 'records', 'profile'] : isA ? ['dashboard', 'users', 'logins', 'kiosks', 'settings', 'platform'] : ['dashboard', 'appointments', 'queue', 'intakes', 'builder', 'analytics'];
+    const pages = isP ? ['dashboard', 'asq', 'nearby', 'appointments', 'records', 'profile'] : isA ? ['dashboard', 'users', 'builder', 'logins', 'kiosks', 'settings'] : ['dashboard', 'appointments', 'queue', 'intakes', 'analytics'];
     const navIdx = pages.indexOf(s.page);
     const ALL = ['dashboard', 'asq', 'nearby', 'appointments', 'records', 'profile', 'builder', 'intakes', 'queue', 'analytics', 'settings', 'users', 'logins', 'kiosks', 'platform'];
     const viewRoles = s.cloud.on ? (s.cloud.roles || []) : ROLE_ORDER;
+    const segRole = s.kiosk ? 'kiosk' : s.role;
     const nav = {}; const go = {};
     ALL.forEach(function (p) { nav[p] = p === s.page ? 'active' : ''; go[p] = function () { self.go(p); }; });
+    go.builder = function () { if (s.role === 'admin') self.go('builder'); else self.switchRole('admin', 'builder'); };
+    go.platform = function () { if (s.role === 'admin') self.go('platform'); else self.switchRole('admin', 'platform'); };
 
     const ui = {
       isPatient: isP, isDoctor: isD, isAdmin: isA,
@@ -4968,12 +5089,12 @@ class Component extends DCLogic {
       context: isP ? 'Patient Portal' : isA ? 'Clinic Admin' : 'Doctor Workspace',
       navX: Math.max(0, navIdx) * NAV_W, navHide: navIdx < 0 ? 'hidden' : '',
       fadeCls: s.switching ? 'fading' : '',
-      segX: Math.max(0, viewRoles.indexOf(s.role)) * 76,
+      segX: Math.max(0, viewRoles.indexOf(segRole)) * 76,
       showSeg: viewRoles.length > 1,
-      segs: viewRoles.map(function (r) { return { label: ROLE_META[r].label, cls: s.role === r ? 'on' : '', pick: function () { self.switchRole(r); } }; }),
-      views: viewRoles.filter(function (r) { return r !== s.role; }).map(function (r) { return { label: 'Switch to ' + ROLE_META[r].label + ' View', pick: function () { self.switchRole(r); } }; }),
+      segs: viewRoles.map(function (r) { return { label: ROLE_META[r].label, cls: segRole === r ? 'on' : '', pick: function () { self.switchRole(r); } }; }),
+      views: viewRoles.filter(function (r) { return r !== s.role; }).map(function (r) { return { label: r === 'kiosk' ? 'Open Kiosk View' : 'Switch to ' + ROLE_META[r].label + ' View', pick: function () { self.switchRole(r); } }; }),
       showDemo: !s.cloud.on, showLoggedOut: s.loggedOut && !s.cloud.on,
-      hasNotice: !!s.apiDown || !!(s.cloud.on && (s.site.maintenance || s.site.announcement)), notice: s.apiDown ? (s.apiDown === 'missing' ? 'The server (API) is not deployed, so sign-in and saving are off. You are looking at demo data. Site owner: make sure the api folder is in the repo and the workflow has api_location: "api".' : 'The server is not responding right now. You are looking at demo data and nothing is saved.') : [s.site.maintenance ? 'Scheduled maintenance is in progress. Some features may be unavailable.' : '', s.site.announcement || ''].filter(Boolean).join(' '),
+      hasNotice: !!s.apiDown || !!(s.cloud.on && (s.site.maintenance || s.site.announcement)), notice: s.apiDown ? (s.apiDown === 'missing' ? 'The server (API) is not deployed, so sign-in and saving are off. You are looking at demo data. Site owner: make sure the api folder is in the repo and the workflow has api_location: "api".' : 'The server is not responding right now (error ' + (s.apiCode || 'network') + '). You are looking at demo data and nothing is saved.') : [s.site.maintenance ? 'Scheduled maintenance is in progress. Some features may be unavailable.' : '', s.site.announcement || ''].filter(Boolean).join(' '),
       userMenu: s.userMenu, toggleUser: function () { self.setState({ userMenu: !s.userMenu }); },
       hasToast: !!s.toast, toast: s.toast || '',
       loggedOut: s.loggedOut, logout: function () { if (s.cloud.on) { self.cloudLogout(); return; } self.setState({ loggedOut: true, userMenu: false }); },
@@ -4984,7 +5105,7 @@ class Component extends DCLogic {
     const pg = {
       pDash: isP && s.page === 'dashboard', asq: isP && s.page === 'asq', pRecords: isP && s.page === 'records', nearby: isP && s.page === 'nearby',
       appts: !isA && s.page === 'appointments', profile: s.page === 'profile',
-      dDash: isD && s.page === 'dashboard', builder: isD && s.page === 'builder', intakes: isD && s.page === 'intakes', queue: isD && s.page === 'queue', analytics: isD && s.page === 'analytics', settings: isA && s.page === 'settings',
+      dDash: isD && s.page === 'dashboard', builder: isA && s.page === 'builder', intakes: isD && s.page === 'intakes', queue: isD && s.page === 'queue', analytics: isD && s.page === 'analytics', settings: isA && s.page === 'settings',
       aDash: isA && s.page === 'dashboard', aUsers: isA && s.page === 'users', aLogin: isA && s.page === 'logins', aKiosk: isA && s.page === 'kiosks', aPlatform: isA && s.page === 'platform'
     };
     const p = s.profile;
@@ -5139,7 +5260,7 @@ class Component extends DCLogic {
       modeResched: false, days: [], hasDay: false, times: [], cantResched: true, doResched: function () {}, modeCancel: false, cancelNote: '', doCancel: function () {},
       hasSummary: false, summary: '', hasQa: false, qa: [], isMsg: false, quick: [], msg: s.msg, onMsg: function (e) { self.setState({ msg: e.target.value }); }, cantSend: !s.msg.trim(), send: function () {}
     };
-    Object.assign(md, { isProv: false, isFlags: false, bio: '', reviews: [], slots: [], book: function () {}, flags: [], hasFlags: false, noFlags: false });
+    Object.assign(md, { hasReviews: false, isProv: false, isFlags: false, bio: '', reviews: [], slots: [], book: function () {}, flags: [], hasFlags: false, noFlags: false });
     if (dm && dm.kind === 'appt') {
       const a = this.findAppt(dm.id);
       if (a) {
@@ -5175,13 +5296,13 @@ class Component extends DCLogic {
       });
     }
     if (dm && dm.kind === 'prov') {
-      const pv = PROVIDERS.find(function (x) { return x.id === dm.id; });
+      const pv = this.providers().find(function (x) { return x.id === dm.id; });
       if (pv) {
         const rt = rating(pv); const nd = NEAR[pv.id]; const nx = this.nextDays();
         const bookIt = function (label) { self.newIntake(); self.setState({ preferred: pv.id, modal: null, role: 'patient' }); self.toast('Complete a quick intake. ' + pv.name + (label ? ' (' + label + ')' : '') + ' is pinned as your pick.'); };
-        Object.assign(md, { open: true, title: pv.name, kicker: pv.specialty + ' · ★ ' + rt.r + ' from ' + rt.n + ' reviews', subtitle: pv.clinic + (nd ? ' · ' + nd[1] + ' · ' + nd[0].toFixed(1) + ' mi' : ''), initials: initials(pv.name), avBg: avBg(pv.name), isProv: true, hasFacts: true,
-          facts: [{ k: 'Experience', v: pv.years + ' years' }, { k: 'Languages', v: ['English', 'English, Spanish', 'English, Hindi', 'English, French'][hueOf(pv.name) % 4] }, { k: 'Accepts', v: 'Northstar Health Plan, Medicare, self-pay' }, { k: 'Visit types', v: 'In-person and telehealth' }],
-          bio: pv.name + ' is a ' + pv.specialty.toLowerCase() + ' specialist at ' + pv.clinic + ' with ' + pv.years + ' years of experience. Patients complete an ASQ-Health intake before the visit, so the appointment starts with your history already on screen.',
+        Object.assign(md, { open: true, hasReviews: !pv.live, title: pv.name, kicker: pv.live ? pv.specialty + (pv.years ? ' · ' + pv.years + ' years' : '') : pv.specialty + ' · ★ ' + rt.r + ' from ' + rt.n + ' reviews', subtitle: (pv.clinic || s.site.clinicName || '') + (nd ? ' · ' + nd[1] + ' · ' + nd[0].toFixed(1) + ' mi' : ''), initials: initials(pv.name), avBg: avBg(pv.name), isProv: true, hasFacts: true,
+          facts: pv.live ? [{ k: 'Experience', v: pv.years ? pv.years + ' years' : 'Not listed' }, { k: 'Visit fee', v: pv.fee ? '$' + String(pv.fee).replace(/^\$/, '') : 'Ask the clinic' }, { k: 'Visit types', v: pv.tele === false ? 'In-person' : 'In-person and telehealth' }] : [{ k: 'Experience', v: pv.years + ' years' }, { k: 'Languages', v: ['English', 'English, Spanish', 'English, Hindi', 'English, French'][hueOf(pv.name) % 4] }, { k: 'Accepts', v: 'Northstar Health Plan, Medicare, self-pay' }, { k: 'Visit types', v: 'In-person and telehealth' }],
+          bio: pv.live ? (pv.bio || pv.name + ' practices ' + pv.specialty.toLowerCase() + ' at ' + (pv.clinic || s.site.clinicName || 'this clinic') + '. Your intake goes straight into their chart before the visit.') : pv.name + ' is a ' + pv.specialty.toLowerCase() + ' specialist at ' + pv.clinic + ' with ' + pv.years + ' years of experience. Patients complete an ASQ-Health intake before the visit, so the appointment starts with your history already on screen.',
           slots: [[0, 1], [1, 4], [2, 7]].map(function (z) { const lbl = nx[z[0]].long + ', ' + TIMES[z[1]]; return { label: lbl, pick: function () { bookIt(lbl); } }; }),
           reviews: [{ stars: '★★★★★', text: 'Explained everything clearly, and my intake was already in the chart when I arrived.', who: 'Verified patient · sample' }, { stars: '★★★★☆', text: 'Short wait and the video visit worked well. Follow-up instructions came by email the same day.', who: 'Verified patient · sample' }],
           book: function () { bookIt(''); } });
@@ -5209,7 +5330,7 @@ class Component extends DCLogic {
     const demo = {
       open: s.demoOpen, toggle: function () { self.setState({ demoOpen: !s.demoOpen, userMenu: false }); },
       autofill: function () { self.demoAutofill(false); }, skipToSchedule: function () { self.demoAutofill(true); },
-      toBuilder: function () { self.setState({ demoOpen: false }); self.switchRole('doctor', 'builder'); },
+      toBuilder: function () { self.setState({ demoOpen: false }); self.switchRole('admin', 'builder'); },
       kiosk: function () { self.openKiosk(); },
       toAdmin: function () { self.setState({ demoOpen: false }); self.switchRole('admin'); },
       reset: function () { self.resetDemo(); }
@@ -5243,7 +5364,12 @@ class Component extends DCLogic {
       submit: function () { self.submit(); }, toReview: function () { self.setState({ step: 2 }); self.startTyping(); }, toProviders: function () { self.setState({ step: 3 }); }
     };
     const pct = prog.total ? Math.round(prog.done / prog.total * 100) : 100;
+    const SECS = s.sections && s.sections.length ? s.sections : SECTIONS0;
+    const secOf = function (q) { return q.sec || SECS[0].id; };
+    const secStats = SECS.map(function (z, si) { const qs = prog.vis.filter(function (q) { return secOf(q) === z.id; }); const dn = qs.filter(function (q) { return filled(s.answers[q.id]); }).length; return { id: z.id, num: si + 1, title: z.title, desc: z.desc || '', count: qs.length, done: dn }; }).filter(function (x) { return x.count > 0; });
     const form = {
+      secTotal: secStats.length,
+      secs: secStats.map(function (x, i) { const ok = x.done === x.count; return { title: x.title, done: x.done, count: x.count, mark: ok ? '✓' : i + 1, cls: ok ? 'done' : '', jump: function () { const el = document.getElementById('fsec-' + x.id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }; }),
       done: prog.done, total: prog.total, pct: pct, ringOff: (339.3 * (1 - pct / 100)).toFixed(1),
       fullCls: prog.ok ? 'full' : '', cantReview: !prog.ok || this.unconfirmed() > 0,
       qs: prog.vis.map(function (q, i) {
@@ -5253,7 +5379,10 @@ class Component extends DCLogic {
         const long = q.type === 'text' && /describe|list/i.test(q.text);
         const parent = q.cond ? s.published.find(function (x) { return x.id === q.cond.q; }) : null;
         const ok = filled(v);
+        const prevQ = i > 0 ? prog.vis[i - 1] : null; const st0 = !prevQ || secOf(prevQ) !== secOf(q);
+        const ss = secStats.find(function (x) { return x.id === secOf(q); }) || { num: 1, title: '', desc: '', count: 0, done: 0 };
         return {
+          secStart: st0, secId: ss.id, secNum: secStats.indexOf(ss) + 1, secTitle: ss.title, secDesc: ss.desc, hasSecDesc: !!ss.desc, secCount: ss.count, secDone: ss.done, secCls: ss.done === ss.count ? 'c-green' : '',
           id: q.id, num: i + 1, text: tq(q, s.lang), required: q.required, value: v, delay: Math.min(i, 10) * 35,
           cls: (ok ? 'ok ' : '') + (q.cond ? 'condq' : ''), navCls: ok ? 'ok' : '', isOk: ok,
           isPref: !!s.pref[q.id], prefSrc: s.pref[q.id] ? s.pref[q.id].src : '', prefPending: !!s.pref[q.id] && !s.pref[q.id].ok, prefDone: !!s.pref[q.id] && !!s.pref[q.id].ok,
@@ -5291,15 +5420,17 @@ class Component extends DCLogic {
       summary: fullSum.slice(0, s.typed), typing: s.typed < fullSum.length
     };
     const term = s.provSearch.trim().toLowerCase();
-    let provs = term ? PROVIDERS.filter(function (x) { return (x.name + ' ' + x.specialty + ' ' + x.clinic + ' ' + x.kw).toLowerCase().indexOf(term) >= 0; }) : PROVIDERS.filter(function (x) { return x.specialty === spec.spec || x.id === s.preferred; });
+    const PVS = this.providers();
+    let provs = term ? PVS.filter(function (x) { return (x.name + ' ' + x.specialty + ' ' + x.clinic + ' ' + x.kw).toLowerCase().indexOf(term) >= 0; }) : s.cloud.on ? PVS.slice() : PVS.filter(function (x) { return x.specialty === spec.spec || x.id === s.preferred; });
     provs = provs.slice().sort(function (a, b) { return ((b.id === s.preferred) * 2 + (b.specialty === spec.spec)) - ((a.id === s.preferred) * 2 + (a.specialty === spec.spec)); });
     const prov = {
       search: s.provSearch, onSearch: function (e) { self.setState({ provSearch: e.target.value }); }, clear: function () { self.setState({ provSearch: '' }); },
-      loading: s.provLoading, ready: !s.provLoading, skels: [1, 2, 3], none: provs.length === 0,
-      list: provs.map(function (x) { return Object.assign({}, x, { initials: initials(x.name), avBg: avBg(x.name), best: x.specialty === spec.spec, pref: x.id === s.preferred, rt: rating(x).r, rn: rating(x).n, profile: function () { self.openModal({ kind: 'prov', id: x.id }); }, pick: function () { self.pickProvider(x.id); } }); })
+      loading: s.provLoading, ready: !s.provLoading, skels: [1, 2, 3], none: provs.length === 0 && PVS.length > 0,
+      noDoctors: s.cloud.on && PVS.length === 0, anyDoc: function () { self.pickProvider('clinic'); },
+      list: provs.map(function (x) { return Object.assign({}, x, { yearsLbl: x.years ? x.years + ' yrs experience' : 'Experience not listed', hasRating: !x.live, initials: initials(x.name), avBg: avBg(x.name), best: x.specialty === spec.spec, pref: x.id === s.preferred, rt: rating(x).r, rn: rating(x).n, profile: function () { self.openModal({ kind: 'prov', id: x.id }); }, pick: function () { self.pickProvider(x.id); } }); })
     };
 
-    const sp = PROVIDERS.find(function (x) { return x.id === s.provider; }) || PROVIDERS[0];
+    const PVS2 = this.providers(); const sp = PVS2.find(function (x) { return x.id === s.provider; }) || PVS2[0] || { name: 'Your care team', clinic: (s.site || SITE0).clinicName };
     const days = this.nextDays();
     const sch = {
       name: sp.name, clinic: sp.clinic, specialty: spec.spec, initials: initials(sp.name), avBg: avBg(sp.name),
@@ -5500,6 +5631,10 @@ class Component extends DCLogic {
       methods: [['password', 'Email and password', 'Works for anyone, including outside patients. Accounts live in your storage.'], ['microsoft', 'Microsoft', 'Work or personal Microsoft accounts. Must match an account email to sign in as staff.'], ['github', 'GitHub', 'Useful for testing. Most patients will not use it.']].map(function (m) {
         const on = !!SITE.methods[m[0]]; return { name: m[1], desc: m[2], on: on, cls: on ? 'on' : '', toggle: function () { self.siteEdit(function (d) { d.methods[m[0]] = !d.methods[m[0]]; }); } };
       }),
+      code: SITE.doctorCode || '', hasCode: !!SITE.doctorCode, codeHelp: SITE.doctorCode ? 'Doctors who sign up with this code get the doctor, admin and kiosk views. Share it privately and change it if it leaks.' : 'Off. Turn on by generating a code, then share it with your doctors so they can create their own account.',
+      onCode: function (e) { const v = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 24); self.siteEdit(function (d) { d.doctorCode = v; }); },
+      genCode: function () { const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c = ''; const r = new Uint32Array(8); (window.crypto || {}).getRandomValues ? window.crypto.getRandomValues(r) : r.forEach(function (_, i) { r[i] = Math.random() * 1e9; }); r.forEach(function (x, i) { c += A[x % A.length]; if (i === 3) c += '-'; }); self.siteEdit(function (d) { d.doctorCode = c; }); },
+      clearCode: function () { self.siteEdit(function (d) { d.doctorCode = ''; }); },
       signupCls: SITE.allowSignup ? 'on' : '', toggleSignup: function () { self.siteEdit(function (d) { d.allowSignup = !d.allowSignup; }); },
       pwMin: String(SITE.passwordMin), onPwMin: function (e) { const v = +e.target.value; self.siteEdit(function (d) { d.passwordMin = v; }); },
       hours: String(SITE.sessionHours), onHours: function (e) { const v = +e.target.value; self.siteEdit(function (d) { d.sessionHours = v; }); },
@@ -5510,7 +5645,7 @@ class Component extends DCLogic {
       save: function () { self.siteSave(); }, discard: function () { self.setState({ siteDraft: null }); },
       hasBanner: !!(SITE.announcement || SITE.maintenance), banner: [SITE.maintenance ? 'Scheduled maintenance in progress.' : '', SITE.announcement || ''].filter(Boolean).join(' '),
       portalName: lpPortal === 'patient' ? 'Patient portal' : 'Care team portal', formTitle: lpPortal === 'patient' ? 'Welcome' : 'Care team sign-in',
-      showTabs: lpPortal === 'patient' && SITE.allowSignup && SITE.methods.password, anySso: anySso && SITE.methods.password,
+      showTabs: lpPortal === 'patient' && (SITE.allowSignup || !!SITE.doctorCode) && SITE.methods.password, anySso: anySso && SITE.methods.password,
       openLive: function () { if (isCloud) window.open('/' + (lpPortal === 'patient' ? 'patient' : 'doctor'), '_blank', 'noopener'); else self.toast('The live page is at /' + lpPortal + ' on your Azure site'); },
       liveNote: isCloud ? (siteDirty ? 'Unsaved changes. The live page updates when you save.' : 'This is what people see at ' + base + '/' + lpPortal + '.') : 'Preview only in the demo. On Azure this page is live at /' + lpPortal + '.'
     };
@@ -5642,8 +5777,9 @@ class Component extends DCLogic {
     const needSign = K ? this.kNeedSign() : false;
     const pinLen = this.kioskPin().length;
     const kAhead = K && K.result ? K.result.ahead : 0;
+    const kPat = !!(isCloud && s.cloud.user && s.cloud.user.role === 'patient');
     const kv = {
-      open: !!K, isDemo: !isCloud, t: T, clinic: (s.kioskCfg && s.kioskCfg.clinicName) || s.site.clinicName || s.doctor.clinic,
+      open: !!K, isDemo: !isCloud, isPat: kPat, t: T, clinic: (s.kioskCfg && s.kioskCfg.clinicName) || s.site.clinicName || s.doctor.clinic,
       bigCls: K && K.big ? 'k-bigtext' : '', toggleBig: function () { self.kset({ big: !K.big }); },
       touch: function () { self.kTouch(); },
       multiLang: kLangs.length > 1, langs: kLangs.map(function (l) { return { label: l === 'Spanish' ? 'Español' : l, cls: K && K.lang === l ? 'on' : '', pick: function () { self.kset({ lang: l }); } }; }),
@@ -5653,8 +5789,8 @@ class Component extends DCLogic {
       walkin: !!K && K.step === 'walkin', verify: !!K && K.step === 'verify', ins: !!K && K.step === 'ins', vitals: !!K && K.step === 'vitals', consent: !!K && K.step === 'consent', done: !!K && K.step === 'done',
       clock: s.kClock || clockNow(), welcomeText: K && K.lang !== 'English' ? (K.lang === 'Spanish' ? 'Bienvenido. Vamos a registrarle.' : KC.welcome) : KC.welcome,
       walkinsOn: !!KC.walkins,
-      toLookup: function () { self.kset({ step: 'lookup', err: '', mode: 'appt' }); }, home: function () { self.kHome(); },
-      walkIn: function () { self.kset({ step: 'walkin', mode: 'walk', err: '' }); },
+      toLookup: function () { if (kPat) { self.kset({ step: 'lookup', err: '', mode: 'appt', last: s.profile.last || s.cloud.user.last || 'me', dob: s.profile.dob || '' }); setTimeout(function () { self.kFind(); }, 0); } else self.kset({ step: 'lookup', err: '', mode: 'appt' }); }, home: function () { self.kHome(); },
+      walkIn: function () { self.kset(kPat ? { step: 'walkin', mode: 'walk', err: '', w: Object.assign({}, K.w, { first: s.profile.first || s.cloud.user.first || '', last: s.profile.last || s.cloud.user.last || '', dob: s.profile.dob || '', phone: s.profile.mobile || '' }) } : { step: 'walkin', mode: 'walk', err: '' }); },
       last: K ? K.last : '', dob: K ? K.dob : '', busy: !!(K && K.busy),
       onLast: function (e) { self.kset({ last: e.target.value, err: '' }); }, onDob: function (e) { self.kset({ dob: e.target.value }); },
       onKey: function (e) { if (e.key === 'Enter') self.kFind(); }, find: function () { self.kFind(); },
@@ -5686,7 +5822,7 @@ class Component extends DCLogic {
       aheadText: kAhead <= 0 ? T.ahead0 : kAhead === 1 ? T.ahead1 : kAhead + T.aheadN,
       doneSub: T.doneSub, doneLeft: K ? (K.doneLeft || 15) : 15,
       help: function () { self.kHelp(); },
-      staff: function () { self.kset({ pin: { entry: '', ok: false, bad: false } }); },
+      staff: function () { if (kPat) { self.closeKiosk(); if (location.pathname !== '/') history.replaceState(null, '', '/'); self.setState({ role: 'patient' }); return; } self.kset({ pin: { entry: '', ok: false, bad: false } }); }, staffLabel: kPat ? 'Exit kiosk' : 'Staff',
       pinOpen: !!(K && K.pin), pinAsk: !!(K && K.pin && !K.pin.ok), pinOk: !!(K && K.pin && K.pin.ok), pinBad: !!(K && K.pin && K.pin.bad),
       pinTitle: K && K.pin && K.pin.ok ? 'Staff options' : 'Staff PIN',
       pinDots: Array.from({ length: pinLen }, function (_, i) { return { cls: K && K.pin && K.pin.entry.length > i ? 'on' : '' }; }),
@@ -5819,28 +5955,65 @@ class Component extends DCLogic {
       kiosk: function () { self.openKiosk(); }
     };
     /* analytics */
-    const A = ANALYTICS[s.range];
-    const extra = s.records.filter(function (r) { return r.isNew; }).length;
+    const liveAn = s.cloud.on;
+    const A = liveAn ? (function () {
+      const nDays = s.range === '7d' ? 7 : s.range === '30d' ? 30 : 90;
+      const t0 = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() - nDays + 1);
+      const fromIso = isoOf(t0), toIso = isoOf(nowD);
+      const inR = function (d) { return !!d && d >= fromIso && d <= toIso; };
+      const recs = s.records.filter(function (r) { return inR(r.date); });
+      const appts = s.docAppts.filter(function (a) { return (a.date >= fromIso) || inR((s.qstate[a.id] || {}).arrivedOn); });
+      const prog = appts.filter(function (a) { return (s.qstate[a.id] || {}).intake === 'progress'; }).length;
+      const notStarted = appts.filter(function (a) { const q = s.qstate[a.id] || {}; return q.intake === 'not_started'; }).length;
+      const secs = recs.map(function (r) { return +r.secs || 0; }).filter(function (x) { return x > 0; }).sort(function (a, b) { return a - b; });
+      const med = secs.length ? secs[Math.floor(secs.length / 2)] : 0;
+      const size = nDays === 7 ? 1 : 7; const nb = Math.ceil(nDays / size);
+      const trend = []; const labels = [];
+      for (let i = 0; i < nb; i++) {
+        const endD = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() - (nb - 1 - i) * size);
+        const stD = new Date(endD.getFullYear(), endD.getMonth(), endD.getDate() - size + 1);
+        const a0 = isoOf(stD), a1 = isoOf(endD);
+        trend.push(recs.filter(function (r) { return r.date >= a0 && r.date <= a1; }).length);
+        labels.push(size === 1 ? DOW[endD.getDay()] : MON[stD.getMonth()] + ' ' + stD.getDate());
+      }
+      const count = function (arr, key, dflt) { const m = {}; arr.forEach(function (r) { const k = r[key] || dflt; m[k] = (m[k] || 0) + 1; }); return Object.keys(m).map(function (k) { return [k, m[k]]; }).sort(function (a, b) { return b[1] - a[1]; }); };
+      const cons = { signed: 0, pending: 0, declined: 0 };
+      appts.forEach(function (a) { const c = (s.qstate[a.id] || {}).consent; if (c === 'signed') cons.signed++; else if (c === 'declined') cons.declined++; else cons.pending++; });
+      const ct = cons.signed + cons.pending + cons.declined;
+      const insV = appts.filter(function (a) { return (s.qstate[a.id] || {}).ins === 'verified'; }).length, insF = appts.filter(function (a) { return (s.qstate[a.id] || {}).ins === 'failed'; }).length;
+      const pctOf = function (n) { return ct ? Math.round(n / ct * 100) : 0; };
+      return { live: true, completed: recs.length, started: recs.length + prog, invited: Math.max(appts.length, recs.length + prog), reviewed: recs.filter(function (r) { return !r.isNew; }).length,
+        mins: med ? Math.floor(med / 60) + 'm ' + String(med % 60).padStart(2, '0') + 's' : '—', trend: trend, tLabels: labels, labels: size === 1 ? 'days' : 'weeks',
+        chRows: count(recs, 'mode', 'Form'), langRows: count(recs, 'lang', 'English'),
+        dropRows: [['Started, not finished', prog], ['Booked, not started', notStarted]].filter(function (r) { return r[1] > 0; }),
+        elig: insV + insF ? Math.round(insV / (insV + insF) * 100) + '%' : '—',
+        cS: pctOf(cons.signed), cP: pctOf(cons.pending), cD: ct ? 100 - pctOf(cons.signed) - pctOf(cons.pending) : 0 };
+    })() : ANALYTICS[s.range];
+    const extra = liveAn ? 0 : s.records.filter(function (r) { return r.isNew; }).length;
     const inv = A.invited + extra, sta = A.started + extra, com = A.completed + extra, rev = A.reviewed;
-    const tMax = Math.max.apply(null, A.trend);
-    const hbar = function (rows, total) { const mx = Math.max.apply(null, rows.map(function (r) { return r[1]; })); return rows.map(function (r) { return { label: r[0], v: r[1] + '%', n: Math.round(total * r[1] / 100), w: Math.round(r[1] / mx * 100) }; }); };
-    const trendLabels = A.labels === 'days' ? week7.map(function (w, i) { const d0 = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() - 6 + i); return DOW[d0.getDay()]; }) : A.trend.map(function (x, i) { return 'W' + (i + 1); });
+    const tMax = Math.max.apply(null, A.trend.concat([1]));
+    const hbar = function (rows, total) { const mx = Math.max.apply(null, rows.map(function (r) { return r[1]; }).concat([1])); return rows.map(function (r) { return { label: r[0], v: r[1] + '%', n: Math.round(total * r[1] / 100), w: Math.round(r[1] / mx * 100) }; }); };
+    const cbar = function (rows) { const tot = rows.reduce(function (t, r) { return t + r[1]; }, 0) || 1; const mx = Math.max.apply(null, rows.map(function (r) { return r[1]; }).concat([1])); return rows.map(function (r) { return { label: r[0], v: r[1] + ' · ' + Math.round(r[1] / tot * 100) + '%', n: r[1], w: Math.round(r[1] / mx * 100) }; }); };
+    const trendLabels = A.live ? A.tLabels : A.labels === 'days' ? week7.map(function (w, i) { const d0 = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() - 6 + i); return DOW[d0.getDay()]; }) : A.trend.map(function (x, i) { return 'W' + (i + 1); });
+    const pctSafe = function (a, b) { return b ? Math.round(a / b * 100) : 0; };
     const an = {
       ranges: [['7d', 'Last 7 days'], ['30d', 'Last 30 days'], ['90d', 'Last 90 days']].map(function (r) { return { label: r[1], cls: s.range === r[0] ? 'on' : '', pick: function () { self.setState({ range: r[0] }); } }; }),
       kpis: [
         { v: sta.toLocaleString(), l: 'Intakes started' },
-        { v: Math.round(com / sta * 100) + '%', l: 'Completion rate' },
+        { v: sta ? pctSafe(com, sta) + '%' : '—', l: 'Completion rate' },
         { v: A.mins, l: 'Median time to complete' },
-        { v: s.range === '7d' ? '93%' : s.range === '30d' ? '92%' : '91%', l: 'Eligibility checks passed' }
+        { v: A.live ? A.elig : s.range === '7d' ? '93%' : s.range === '30d' ? '92%' : '91%', l: 'Eligibility checks passed' }
       ],
       trend: A.trend.map(function (c, i) { return { v: c, h: Math.round(c / tMax * 100), dn: trendLabels[i], tip: trendLabels[i] + ': ' + c + ' intakes completed', cls: s.anSel === i ? 'sel' : '', pick: function () { self.setState({ anSel: s.anSel === i ? null : i }); } }; }),
       trendTitle: A.labels === 'days' ? 'Completed intakes per day' : 'Completed intakes per week',
-      funnel: [['Invited', inv], ['Started', sta], ['Completed', com], ['Reviewed by provider', rev]].map(function (f) { return { label: f[0], v: f[1].toLocaleString(), pct: Math.round(f[1] / inv * 100) + '%', w: Math.round(f[1] / inv * 100) }; }),
-      channels: hbar(CH_SPLIT, sta), languages: hbar(LANG_SPLIT, sta), drops: hbar(DROP_SPLIT, sta - com),
-      consentSigned: 94, consentPending: 5, consentDeclined: 1,
+      funnel: [['Invited', inv], ['Started', sta], ['Completed', com], ['Reviewed by provider', rev]].map(function (f) { return { label: f[0], v: f[1].toLocaleString(), pct: pctSafe(f[1], inv) + '%', w: pctSafe(f[1], inv) }; }),
+      channels: A.live ? cbar(A.chRows) : hbar(CH_SPLIT, sta), languages: A.live ? cbar(A.langRows) : hbar(LANG_SPLIT, sta), drops: A.live ? cbar(A.dropRows) : hbar(DROP_SPLIT, sta - com),
+      noChannels: !!A.live && A.chRows.length === 0, noLangs: !!A.live && A.langRows.length === 0, noDrops: !!A.live && A.dropRows.length === 0,
+      consentSigned: A.live ? A.cS : 94, consentPending: A.live ? A.cP : 5, consentDeclined: A.live ? A.cD : 1,
+      isLive: !!A.live, isSample: !A.live, isEmpty: !!A.live && inv === 0,
       exportCsv: function () {
         const rows = [['Metric', 'Value']].concat([['Range', s.range], ['Invited', inv], ['Started', sta], ['Completed', com], ['Reviewed', rev], ['Median time', A.mins]])
-          .concat(CH_SPLIT.map(function (c) { return ['Channel: ' + c[0], c[1] + '%']; })).concat(LANG_SPLIT.map(function (c) { return ['Language: ' + c[0], c[1] + '%']; })).concat(DROP_SPLIT.map(function (c) { return ['Drop-off: ' + c[0], c[1] + '%']; }));
+          .concat((A.live ? A.chRows : CH_SPLIT).map(function (c) { return ['Channel: ' + c[0], c[1] + (A.live ? '' : '%')]; })).concat((A.live ? A.langRows : LANG_SPLIT).map(function (c) { return ['Language: ' + c[0], c[1] + (A.live ? '' : '%')]; })).concat((A.live ? A.dropRows : DROP_SPLIT).map(function (c) { return ['Drop-off: ' + c[0], c[1] + (A.live ? '' : '%')]; }));
         self.saveFile('asqdoc-analytics-' + s.range + '.csv', toCsv(rows), 'text/csv'); self.audit('Exported analytics report (' + s.range + ')');
       }
     };
@@ -5890,7 +6063,7 @@ class Component extends DCLogic {
       specialty: d.specialty, clinic: d.clinic, fee: d.fee, years: d.years, tele: d.tele, teleCls: d.tele ? 'on' : '', teleLabel: d.tele ? 'Available' : 'Not offered',
       onSpec: docSet('specialty'), onClinic: docSet('clinic'), onFee: docSet('fee'), onYears: docSet('years'),
       toggleTele: function () { self.setState((x) => ({ doctor: Object.assign({}, x.doctor, { tele: !x.doctor.tele }) })); },
-      save: function () { self.toast('Doctor profile updated'); },
+      save: function () { self.saveProfile(true); },
       goEdit: function () { self.switchRole('doctor', 'profile'); }
     };
     const pf = function (k) { return function (e) { const v = e.target.value; self.setState((x) => ({ profile: Object.assign({}, x.profile, { [k]: v }) })); }; };
@@ -5900,7 +6073,7 @@ class Component extends DCLogic {
       showDocCard: isP && !s.cloud.on,
       first: p.first, last: p.last, mobile: p.mobile, dob: p.dob, lang: p.lang, gender: p.gender,
       onFirst: pf('first'), onLast: pf('last'), onMobile: pf('mobile'), onDob: pf('dob'), onLang: pf('lang'), onGender: pf('gender'),
-      save: function () { self.toast('Profile saved'); }
+      save: function () { self.saveProfile(false); }
     };
     const recFmt = s.records.map(function (r) { return Object.assign({}, r, { initials: initials(r.name), avBg: avBg(r.name), nice: niceDate(r.date), isNew: !!r.isNew, modeTag: r.mode || 'Form', openRec: function () { self.go('intakes'); self.setState({ recOpen: r.id, recSearch: '' }); } }); });
     const nextUp = dUp[0];
@@ -5929,12 +6102,12 @@ class Component extends DCLogic {
     };
 
     const dr = s.draft;
-    const dirty = JSON.stringify(dr) !== JSON.stringify(s.published);
+    const dirty = JSON.stringify(dr) !== JSON.stringify(s.published) || JSON.stringify(s.draftSecs) !== JSON.stringify(s.sections);
     const idxOf = {}; dr.forEach(function (q, i) { idxOf[q.id] = i; });
     const df = s.docFlow;
     const draftPrev = docDraft();
     const bld = {
-      pubCount: s.published.length, dirty: dirty, open: s.builderOpen,
+      pubCount: s.published.length, pubSecCount: s.sections.length, dirty: dirty, open: s.builderOpen,
       manualCls: s.builderOpen ? 'on' : '', docCls: df ? 'on' : '',
       openLabel: s.builderOpen ? 'Close builder' : 'Open builder',
       toggleOpen: function () { self.setState({ builderOpen: !s.builderOpen }); },
@@ -5947,11 +6120,13 @@ class Component extends DCLogic {
       useSample: function () { self.startDoc('pre-operative-assessment.pdf'); },
       draftCount: draftPrev.length,
       draftPreview: draftPrev.map(function (q, i) { return { num: i + 1, text: q.text, type: TYPE_LABEL[q.type] + (q.cond ? ' · conditional' : ''), chip: q.cond ? 'c-teal' : '' }; }),
-      useDraft: function () { self.setState({ draft: docDraft(), builderOpen: true, docFlow: null, activeTpl: null, selectedQ: null }); self.toast('AI draft loaded into the builder. Review, then publish'); setTimeout(function () { const el = document.getElementById('builder-top'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120); },
+      useDraft: function () { self.setState({ draft: withSecs(docDraft(), s.draftSecs), builderOpen: true, docFlow: null, activeTpl: null, selectedQ: null }); self.toast('AI draft loaded into the builder. Review, then publish'); setTimeout(function () { const el = document.getElementById('builder-top'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120); },
       templates: TEMPLATES.map(function (t) { return { name: t.name, desc: t.desc, color: t.color, count: t.build().length, cls: s.activeTpl === t.key ? 'on' : '', pick: function () { self.loadTemplate(t); } }; }),
       addQ: function () { self.addQ(); },
       publish: function () { self.publish(); },
-      discard: function () { self.setState({ draft: clone(s.published), selectedQ: null }); self.toast('Draft reset to the published workflow'); },
+      discard: function () { self.setState({ draft: clone(s.published), draftSecs: clone(s.sections), selectedQ: null }); self.toast('Draft reset to the published form'); },
+      addSec: function () { self.addSec(); }, secCount: s.draftSecs.length,
+      secOpts: s.draftSecs.map(function (z) { return { id: z.id, title: z.title }; }),
       draftQCount: dr.length, reqCount: dr.filter(function (q) { return q.required; }).length,
       branchCount: dr.filter(function (q) { return !!q.cond; }).length,
       qs: dr.map(function (q, i) {
@@ -5960,7 +6135,7 @@ class Component extends DCLogic {
         const pVals = parent ? (parent.type === 'yesno' ? ['Yes', 'No'] : parent.type === 'choice' ? parent.options : null) : null;
         const short = function (t) { return t.length > 38 ? t.slice(0, 36) + '…' : t; };
         return {
-          id: q.id, num: i + 1, text: q.text, type: q.type, required: q.required,
+          id: q.id, num: i + 1, text: q.text, type: q.type, required: q.required, sec: q.sec, onSec: function (e) { self.updQ(q.id, { sec: e.target.value }); },
           cls: (s.selectedQ === q.id ? 'sel ' : '') + (s.dragId === q.id ? 'dragging ' : '') + (s.overId === q.id && s.dragId !== q.id ? 'over ' : '') + (q.cond ? 'condq' : ''),
           isFirst: i === 0, isLast: i === dr.length - 1, isChoice: q.type === 'choice',
           reqCls: q.required ? 'on' : '',
@@ -5997,6 +6172,10 @@ class Component extends DCLogic {
         };
       })
     };
+    const bqs = bld.qs;
+    bld.secs = s.draftSecs.map(function (z, si) { const list = bqs.filter(function (q) { return q.sec === z.id; }); return { id: z.id, num: si + 1, title: z.title, desc: z.desc || '', count: list.length, empty: list.length === 0, qs: list, isFirst: si === 0, isLast: si === s.draftSecs.length - 1, only: s.draftSecs.length <= 1,
+        onTitle: function (e) { self.secSet(z.id, 'title', e.target.value); }, onDesc: function (e) { self.secSet(z.id, 'desc', e.target.value); },
+        up: function () { self.moveSec(z.id, -1); }, down: function () { self.moveSec(z.id, 1); }, del: function () { self.delSec(z.id); }, addQ: function () { self.addQ(z.id); } }; });
 
     const NW = 250, NH = 54, ROW = 84, LX = [10, 330], TOP = 60;
     const spineX = LX[0] + NW / 2;

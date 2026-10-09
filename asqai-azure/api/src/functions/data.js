@@ -54,6 +54,7 @@ app.http('clinicPublic', {
     const st = d.settings || null;
     return C.ok({
       published: d.published || null,
+      sections: d.sections || null,
       settings: st ? { channels: st.channels, langs: st.langs, consents: st.consents, standalone: st.standalone } : null
     });
   })

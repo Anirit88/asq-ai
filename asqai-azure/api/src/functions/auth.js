@@ -15,7 +15,7 @@ app.http('me', {
     const r = await C.currentUser(request);
     if (!r.user) return C.json(401, { error: 'Sign in required', reason: r.reason });
     const site = await C.getSite();
-    return C.ok({ user: C.publicUser(r.user), via: r.via, site: C.publicSite(site) });
+    return C.ok({ user: C.publicUser(r.user), via: r.via, views: C.VIEWS[r.user.role] || [], site: C.publicSite(site) });
   })
 });
 
@@ -74,8 +74,14 @@ app.http('authSignup', {
   route: 'auth/signup', methods: ['POST'], authLevel: 'anonymous',
   handler: C.handle(async (request) => {
     const site = await C.getSite();
-    if (!site.allowSignup || !site.methods.password) return C.bad('New patient sign-up is turned off. Contact the clinic to get an account.', 403);
     const b = await C.readJson(request);
+    const wantsDoctor = b.role === 'doctor';
+    if (!site.methods.password) return C.bad('Email and password sign-up is turned off for this clinic.', 403);
+    if (wantsDoctor) {
+      if (!site.doctorCode) return C.bad('Doctor sign-up is not open. Ask your clinic admin to create your account or share the clinic code.', 403);
+      const given = Buffer.from(String(b.code || '').trim().toUpperCase()); const want = Buffer.from(String(site.doctorCode).trim().toUpperCase());
+      if (given.length !== want.length || !require('crypto').timingSafeEqual(given, want)) return C.bad('That clinic code is not correct. Ask your clinic admin for the current code.', 403);
+    } else if (!site.allowSignup) return C.bad('New patient sign-up is turned off. Contact the clinic to get an account.', 403);
     const email = String(b.email || '').trim().toLowerCase();
     if (!C.validEmail(email)) return C.bad('Enter a valid email address.');
     if (!String(b.first || '').trim() || !String(b.last || '').trim()) return C.bad('Enter your first and last name.');
@@ -83,12 +89,13 @@ app.http('authSignup', {
     let created = null; let exists = false;
     await C.updateUsers((list) => {
       if (list.some((x) => x.email === email)) { exists = true; return; }
-      created = C.newUser({ email, first: b.first, last: b.last, dob: b.dob, phone: b.phone, role: 'patient' });
+      created = C.newUser({ email, first: b.first, last: b.last, dob: b.dob, phone: b.phone, role: wantsDoctor ? 'doctor' : 'patient' });
+      if (wantsDoctor) created.doctor = { specialty: String(b.specialty || '').slice(0, 80), clinic: site.clinicName || '', fee: '', years: '', tele: true };
       created.pw = C.hashPassword(b.password); created.lastLogin = new Date().toISOString();
       list.push(created);
     });
     if (exists) return C.bad('An account with this email already exists. Sign in instead.', 409);
-    await C.audit(email, 'Patient created an account (self sign-up)');
+    await C.audit(email, (wantsDoctor ? 'Doctor' : 'Patient') + ' created an account (self sign-up' + (wantsDoctor ? ' with clinic code' : '') + ')');
     const hours = site.sessionHours || 12;
     return C.ok({ user: C.publicUser(created) }, { cookies: [C.sessionCookie(C.signToken(created, hours), hours)] });
   })
@@ -115,5 +122,38 @@ app.http('authPassword', {
     await C.audit(me.email, 'Changed password');
     const hours = site.sessionHours || 12;
     return C.ok({ user: C.publicUser(fresh) }, { cookies: [C.sessionCookie(C.signToken(fresh, hours), hours)] });
+  })
+});
+
+// PUT /api/me/profile { first, last, phone, dob, doctor: { specialty, clinic, fee, years, tele, bio } }
+app.http('meProfile', {
+  route: 'me/profile', methods: ['PUT'], authLevel: 'anonymous',
+  handler: C.handle(async (request) => {
+    const me = await C.requireUser(request, ['patient', 'doctor', 'admin']);
+    const b = await C.readJson(request);
+    let fresh = null;
+    await C.updateUsers((list) => {
+      const x = list.find((y) => y.id === me.id); if (!x) return;
+      ['first', 'last', 'phone'].forEach((k) => { if (typeof b[k] === 'string') x[k] = b[k].trim().slice(0, 60); });
+      if (typeof b.dob === 'string') x.dob = b.dob.slice(0, 10);
+      if (b.doctor && typeof b.doctor === 'object' && (x.role === 'doctor' || x.role === 'admin')) {
+        const d = b.doctor;
+        x.doctor = { specialty: String(d.specialty || '').slice(0, 80), clinic: String(d.clinic || '').slice(0, 80), fee: String(d.fee || '').slice(0, 10), years: String(d.years || '').slice(0, 4), tele: !!d.tele, bio: String(d.bio || '').slice(0, 400) };
+      }
+      fresh = x;
+    });
+    return C.ok({ user: C.publicUser(fresh) });
+  })
+});
+
+// GET /api/clinic/doctors -> the clinic's doctors, for patients choosing a provider
+app.http('clinicDoctors', {
+  route: 'clinic/doctors', methods: ['GET'], authLevel: 'anonymous',
+  handler: C.handle(async (request) => {
+    await C.requireUser(request);
+    const users = await C.getUsers();
+    const docs = users.filter((u) => u.status === 'active' && (u.role === 'doctor' || (u.role === 'admin' && u.doctor && u.doctor.specialty)))
+      .map((u) => ({ id: u.id, name: 'Dr. ' + ((u.first || '') + ' ' + (u.last || '')).trim(), specialty: (u.doctor && u.doctor.specialty) || 'General Medicine', clinic: (u.doctor && u.doctor.clinic) || '', years: +((u.doctor && u.doctor.years) || 0) || 0, fee: (u.doctor && u.doctor.fee) || '', tele: u.doctor ? u.doctor.tele !== false : true, bio: (u.doctor && u.doctor.bio) || '' }));
+    return C.ok({ doctors: docs });
   })
 });

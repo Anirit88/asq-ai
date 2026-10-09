@@ -63,7 +63,9 @@ To make a random `SESSION_SECRET`, mash the keyboard for 40+ characters, or use 
 1. Open `https://<your-app>.azurestaticapps.net/doctor`.
 2. Enter your `ADMIN_EMAIL` and `ADMIN_PASSWORD`, then click **Sign in**.
 3. Choose your own password when asked. From then on, the `ADMIN_PASSWORD` setting is ignored.
-4. You land in the **Admin view**. Click **Platform** to see the go-live checklist.
+4. You land in the **Admin view**. On **Overview**, click **Platform and data** to see the go-live checklist.
+
+The first time a doctor or admin signs in, an empty clinic is created in your storage. There is no sample data.
 
 ## Step 6. Set things up in the Admin view
 
@@ -86,12 +88,21 @@ To make a random `SESSION_SECRET`, mash the keyboard for 40+ characters, or use 
    - unlock a locked account
    - delete them (inside **Edit**)
 
-**Login pages**
+**Intake form**
+
+1. The form is split into sections. It starts with Demographics, Reason for visit, Medical history, Medications and allergies, Insurance and Lifestyle.
+2. Rename a section, add a short description, move it up or down, or delete it. Its questions move to the section above.
+3. Click **Add section** for a new one, then **Add question to this section**.
+4. Each question has a **Section** menu to move it.
+5. Click **Publish**. Patients see the new form, with section headings and a section list, right away.
+
+**Sign-in**
 
 1. Edit the headline, text, bullet points, clinic name, support phone and accent color.
 2. Choose which sign-in methods are allowed, and whether patients can create their own accounts.
-3. Set password length, how long people stay signed in, and the lockout after failed attempts.
-4. Click **Save changes**. The live pages update right away.
+3. **Doctor sign-up clinic code**: click **Generate**, then **Save changes**. Share the code privately with your doctors. On the sign-in page they pick **I am a Doctor** and enter the code to create their own account. Click **Turn off** to stop doctor sign-up.
+4. Set password length, how long people stay signed in, and the lockout after failed attempts.
+5. Click **Save changes**. The live pages update right away.
 
 **Kiosk**
 
@@ -99,9 +110,9 @@ To make a random `SESSION_SECRET`, mash the keyboard for 40+ characters, or use 
 2. Turn walk-ins, insurance photo, vitals and consent on or off.
 3. Choose the kiosk languages.
 
-**Platform**
+**Platform and data** (button on Overview)
 
-1. Click **Remove sample clinic data** when you're ready to start with only real patients.
+1. See the go-live checklist and storage details.
 2. Use the export buttons to download all data, the user list or the audit log.
 
 ## Step 7. Your sign-in links
@@ -109,7 +120,7 @@ To make a random `SESSION_SECRET`, mash the keyboard for 40+ characters, or use 
 | Who | Link |
 |---|---|
 | Patients | `https://<your-app>.azurestaticapps.net/patient` |
-| Doctors, admins and kiosks | `https://<your-app>.azurestaticapps.net/doctor` |
+| Doctors, admins, kiosks (and doctor sign-up) | `https://<your-app>.azurestaticapps.net/doctor` |
 | Lobby tablet | `https://<your-app>.azurestaticapps.net/kiosk` |
 
 ## Step 8. Set up the lobby tablet
@@ -130,7 +141,10 @@ The kiosk resets itself after the inactivity time you set, and after each finish
 | Part | Details |
 |---|---|
 | **Accounts** | Stored in your private storage. Passwords are hashed with scrypt and never stored or shown after creation. Sign-in uses a secure, HttpOnly cookie. |
-| **Roles** | **Patient**: patient view only. **Doctor**: doctor view. **Admin**: everything. **Kiosk**: check-in screens only, and it sees just first name, last initial and visit time. |
+| **Roles and views** | **Patient**: Patient view and Kiosk (they can check themselves in for their own visit). **Doctor** and **Admin**: Doctor view, Admin view and Kiosk. **Kiosk account**: check-in screens only, and it sees just first name, last initial and visit time. |
+| **Sign-up** | On the sign-in page, people choose **I am a Patient** or **I am a Doctor**. Patients sign up freely (if allowed). Doctors need the clinic code. Accounts are saved in your storage, so they sign in again with the same email and password. |
+| **Doctors patients can book** | Every active doctor account appears in the patient's provider list, with the specialty, fee and experience they enter under **Profile**. |
+| **Analytics** | Calculated from your real visits, intakes and check-ins. |
 | **Lockout** | After the set number of failed attempts, the account locks for 15 minutes. Admins can unlock it early. |
 | **Clinic data** | Schedule, queue, intake records, settings and audit log are shared by the care team. Each patient's own data is private to them. |
 | **Doctor search** | Doctors come from the CMS NPI Registry. Practice locations are placed using the US Census geocoder. Clinics, hospitals, map tiles and address search come from OpenStreetMap. All are free with no API key, and only work in the US. |
@@ -145,7 +159,7 @@ The kiosk resets itself after the inactivity time you set, and after each finish
 | Doctor search says "did not respond" | The public registry may be busy. Try again, or search by ZIP code. |
 | Map is grey | Allow the page to load images from `tile.openstreetmap.org`. Some company networks block it. |
 | "Use my location" does nothing | The browser blocked location. Allow it in the browser's site settings, or type a ZIP code. |
-| A tablet shows the sign-in page again | The session ended. Raise **Stay signed in for** on the **Login pages** screen (up to 7 days), then sign the tablet in again. |
+| A tablet shows the sign-in page again | The session ended. Raise **Stay signed in for** on the **Sign-in** screen (up to 7 days), then sign the tablet in again. |
 
 ## Before using real patient data
 

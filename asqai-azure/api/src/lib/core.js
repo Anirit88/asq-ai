@@ -7,6 +7,9 @@ const SITE_DOC = 'config/site.json';
 const AUDIT_DOC = 'admin/audit.json';
 const COOKIE = 'asq_s';
 const ROLES = ['patient', 'doctor', 'admin', 'kiosk'];
+const STAFF = ['doctor', 'admin'];
+// Which views each role may open
+const VIEWS = { patient: ['patient', 'kiosk'], doctor: ['doctor', 'admin', 'kiosk'], admin: ['doctor', 'admin', 'kiosk'], kiosk: ['kiosk'] };
 
 /* ---------------- http ---------------- */
 function json(status, body, extra) {
@@ -43,6 +46,7 @@ function defaultSite() {
     accent: '#0F766E',
     methods: { password: true, microsoft: true, github: true },
     allowSignup: true,
+    doctorCode: '',
     passwordMin: 8,
     sessionHours: 12,
     lockout: 5,
@@ -92,7 +96,7 @@ function publicSite(s) {
   const k = Object.assign({}, s.kiosk); delete k.pin;
   return {
     clinicName: s.clinicName, supportPhone: s.supportPhone, accent: s.accent, methods: s.methods,
-    allowSignup: s.allowSignup, passwordMin: s.passwordMin, announcement: s.announcement, maintenance: s.maintenance,
+    allowSignup: s.allowSignup, doctorSignup: !!s.doctorCode, passwordMin: s.passwordMin, announcement: s.announcement, maintenance: s.maintenance,
     portals: s.portals, kiosk: k
   };
 }
@@ -133,7 +137,8 @@ function publicUser(u) {
     id: u.id, email: u.email, first: u.first || '', last: u.last || '', role: u.role, status: u.status,
     created: u.created, lastLogin: u.lastLogin || null, mustChange: !!u.mustChange, phone: u.phone || '', dob: u.dob || '',
     methods: ['password'].filter(() => !!u.pw).concat((u.providers || []).map((p) => p.p === 'aad' ? 'microsoft' : p.p)),
-    locked: !!(u.lockUntil && u.lockUntil > Date.now())
+    locked: !!(u.lockUntil && u.lockUntil > Date.now()),
+    doctor: u.doctor || null
   };
 }
 function newUser(f) {
@@ -240,7 +245,7 @@ async function audit(actor, action) {
 
 module.exports = {
   json, ok, bad, readJson, handle,
-  SITE_DOC, USERS_DOC, AUDIT_DOC, ROLES,
+  SITE_DOC, USERS_DOC, AUDIT_DOC, ROLES, STAFF, VIEWS,
   defaultSite, mergeSite, getSite, clearSiteCache, publicSite,
   hashPassword, verifyPassword, tempPassword, passwordProblem,
   getUsers, updateUsers, publicUser, newUser, validEmail,

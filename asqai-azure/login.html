@@ -183,6 +183,8 @@
   .spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:sp .7s linear infinite}
   @keyframes sp{to{transform:rotate(360deg)}}
   .collapse{display:none}
+  .iam{font-size:12.5px;font-weight:500;color:#C9D7F5;margin-bottom:5px}
+  .tabs.roles{margin-bottom:2px}
 
   @media (max-width:1180px){.log{display:none}.jcards{grid-template-columns:repeat(3,1fr)}.jc:nth-child(n+4){display:none}}
   @media (max-width:880px){.m-copy{left:clamp(28px,7vw,120px);right:auto;text-align:left}}
@@ -331,6 +333,11 @@
     </form>
 
     <form id="fUp" class="hidden" novalidate>
+      <div><div class="iam">I am a</div><div class="tabs roles" id="roleTabs"><button type="button" id="rPat" class="on">Patient</button><button type="button" id="rDoc">Doctor</button></div></div>
+      <div id="docFields" class="hidden" style="display:grid;gap:11px">
+        <label>Clinic code<input id="upCode" autocomplete="off" autocapitalize="characters" placeholder="Given to you by your clinic admin"></label>
+        <label>Specialty<input id="upSpec" placeholder="For example: Family Medicine"></label>
+      </div>
       <div class="row2"><label>First name<input id="upFirst" autocomplete="given-name" required></label><label>Last name<input id="upLast" autocomplete="family-name" required></label></div>
       <label>Email<input id="upEmail" type="email" autocomplete="email" required></label>
       <div class="row2"><label>Date of birth<input id="upDob" type="date" autocomplete="bday"></label><label>Mobile<input id="upPhone" type="tel" autocomplete="tel" placeholder="Optional"></label></div>
@@ -704,8 +711,11 @@
     $('portalName').textContent = isP ? 'Patient portal' : 'Care team portal';
     $('formTitle').textContent = isP ? 'Welcome' : 'Care team sign-in';
     $('formLead').textContent = isP ? 'Sign in to prepare for your visit, or create an account if you are new.' : 'Doctors, front desk, admins and lobby kiosks sign in here.';
-    var canUp = isP && s.allowSignup && s.methods.password;
+    var canUp = s.methods.password && ((isP && s.allowSignup) || s.doctorSignup);
     $('tabs').classList.toggle('hidden', !canUp);
+    setRole(isP ? 'patient' : 'doctor');
+    $('rPat').classList.toggle('hidden', !s.allowSignup); $('rDoc').classList.toggle('hidden', !s.doctorSignup);
+    if (!s.allowSignup && s.doctorSignup) setRole('doctor'); if (s.allowSignup && !s.doctorSignup) setRole('patient');
     $('fIn').classList.toggle('hidden', !s.methods.password);
     $('inBtn').textContent = p.cta || 'Sign in';
     var redirect = encodeURIComponent(nextUrl || (isP ? '/' : '/'));
@@ -725,6 +735,14 @@
     else if (reason === 'signed-out') msg($('msg'), 'ok', 'You have been signed out.');
   }
 
+  var upRole = 'patient';
+  function setRole(r) {
+    upRole = r; $('rPat').classList.toggle('on', r === 'patient'); $('rDoc').classList.toggle('on', r === 'doctor');
+    $('docFields').classList.toggle('hidden', r !== 'doctor');
+    var dob = $('upDob').closest('label'); if (dob) dob.style.display = r === 'doctor' ? 'none' : '';
+  }
+  $('rPat').onclick = function () { setRole('patient'); };
+  $('rDoc').onclick = function () { setRole('doctor'); };
   function setTab(up) {
     $('tabIn').classList.toggle('on', !up); $('tabUp').classList.toggle('on', up);
     $('fIn').classList.toggle('hidden', up); $('fUp').classList.toggle('hidden', !up);
@@ -762,7 +780,8 @@
   $('fUp').onsubmit = async function (e) {
     e.preventDefault();
     if (preview) { msg($('msg'), live ? 'err' : 'info', live ? 'Sign-up is unavailable: the server (API) is not responding. Please try again later.' : 'This is a preview. Account sign-up works on your Azure site.'); return; }
-    var b = { first: $('upFirst').value.trim(), last: $('upLast').value.trim(), email: $('upEmail').value.trim(), dob: $('upDob').value, phone: $('upPhone').value.trim(), password: $('upPw').value };
+    var b = { role: upRole, code: $('upCode').value.trim(), specialty: $('upSpec').value.trim(), first: $('upFirst').value.trim(), last: $('upLast').value.trim(), email: $('upEmail').value.trim(), dob: upRole === 'doctor' ? '' : $('upDob').value, phone: $('upPhone').value.trim(), password: $('upPw').value };
+    if (upRole === 'doctor' && !b.code) { msg($('msg'), 'err', 'Enter the clinic code from your clinic admin.'); return; }
     if (!b.first || !b.last || !b.email || !b.password) { msg($('msg'), 'err', 'Fill in your name, email and a password.'); return; }
     busy($('upBtn'), true); msg($('msg'));
     var r = await api('POST', '/api/auth/signup', b).catch(function () { return { ok: false, data: { error: 'Could not reach the server.' } }; });

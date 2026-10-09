@@ -5,7 +5,7 @@ const C = require('../lib/core');
 const S = require('../lib/store');
 const CLINIC_DOC = 'clinic/state.json';
 
-const KIOSK = ['kiosk', 'admin', 'doctor'];
+const KIOSK = ['kiosk', 'admin', 'doctor', 'patient']; // patients may check themselves in
 const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 const clock = (d) => (d.getHours() % 12 || 12) + ':' + String(d.getMinutes()).padStart(2, '0') + (d.getHours() < 12 ? ' AM' : ' PM');
 // Kiosk sends its local date/time so "today" matches the clinic's time zone.
@@ -38,15 +38,16 @@ app.http('kioskConfig', {
 app.http('kioskLookup', {
   route: 'kiosk/lookup', methods: ['POST'], authLevel: 'anonymous',
   handler: C.handle(async (request) => {
-    await C.requireUser(request, KIOSK);
+    const me = await C.requireUser(request, KIOSK);
     const b = await C.readJson(request);
-    const last = String(b.last || '').trim().toLowerCase();
+    const own = me.role === 'patient';
+    const last = own ? String(me.last || b.last || 'x').trim().toLowerCase() : String(b.last || '').trim().toLowerCase();
     const dob = String(b.dob || '').trim();
-    if (last.length < 2) return C.bad('Enter your last name.');
+    if (!own && last.length < 2) return C.bad('Enter your last name.');
     const today = todayOf(b);
     const d = (await S.getDoc(CLINIC_DOC)).data || {};
     const matches = (d.docAppts || []).filter((a) => a.status === 'scheduled' && a.date >= today &&
-      String(a.patient || '').toLowerCase().split(/\s+/).pop() === last && (!a.dob || !dob || a.dob === dob))
+      (own ? a.patientId === me.id : (String(a.patient || '').toLowerCase().split(/\s+/).pop() === last && (!a.dob || !dob || a.dob === dob))))
       .sort((x, y) => (x.date + x.time < y.date + y.time ? -1 : 1)).slice(0, 3);
     return C.ok({
       matches: matches.map((a) => {
@@ -67,7 +68,7 @@ app.http('kioskCheckin', {
     const today = todayOf(b);
     let out = null; let err = null;
     await S.updateDoc(CLINIC_DOC, (d) => {
-      const a = (d.docAppts || []).find((x) => x.id === b.id);
+      const a = (d.docAppts || []).find((x) => x.id === b.id && (me.role !== 'patient' || x.patientId === me.id));
       if (!a) { err = 'Appointment not found'; return d; }
       d.qstate = d.qstate || {};
       const q = Object.assign({}, d.qstate[a.id] || {});
@@ -99,6 +100,7 @@ app.http('kioskWalkin', {
     const s = await C.getSite();
     if (!s.kiosk.walkins) return C.bad('Walk-ins are not accepted at this kiosk. Please see the front desk.', 403);
     const b = await C.readJson(request, 64 * 1024);
+    if (me.role === 'patient') { b.first = me.first || b.first; b.last = me.last || b.last; b.dob = me.dob || b.dob; b.phone = me.phone || b.phone; }
     const first = String(b.first || '').trim(); const last = String(b.last || '').trim();
     if (!first || !last) return C.bad('Enter your first and last name.');
     const today = todayOf(b);
@@ -106,7 +108,7 @@ app.http('kioskWalkin', {
     let out = null;
     await S.updateDoc(CLINIC_DOC, (d) => {
       const name = (first + ' ' + last).slice(0, 80);
-      d.docAppts = (d.docAppts || []).concat([{ id, patient: name, dob: String(b.dob || '').slice(0, 10), phone: String(b.phone || '').slice(0, 30),
+      d.docAppts = (d.docAppts || []).concat([{ id, patient: name, patientId: me.role === 'patient' ? me.id : undefined, dob: String(b.dob || '').slice(0, 10), phone: String(b.phone || '').slice(0, 30),
         reason: String(b.reason || 'Walk-in visit').slice(0, 200), date: today, time: b.at || clock(new Date()), type: 'inperson', status: 'scheduled', source: 'Walk-in (kiosk)', lang: String(b.lang || 'English').slice(0, 20) }]);
       d.qstate = d.qstate || {};
       const queueNo = nextQueue(d, today);

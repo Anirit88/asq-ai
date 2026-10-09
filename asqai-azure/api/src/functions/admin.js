@@ -3,7 +3,7 @@ const { app } = require('../lib/v3');
 const C = require('../lib/core');
 const S = require('../lib/store');
 
-const ADMIN = ['admin'];
+const ADMIN = ['admin', 'doctor'];
 const CLINIC_DOC = 'clinic/state.json';
 
 // GET  /api/admin/users        -> list accounts
@@ -44,12 +44,12 @@ app.http('adminUser', {
     const users = await C.getUsers();
     const target = users.find((x) => x.id === id);
     if (!target) return C.bad('Account not found', 404);
-    const admins = users.filter((x) => x.role === 'admin' && x.status === 'active');
-    const lastAdmin = target.role === 'admin' && target.status === 'active' && admins.length <= 1;
+    const admins = users.filter((x) => C.STAFF.indexOf(x.role) >= 0 && x.status === 'active');
+    const lastAdmin = C.STAFF.indexOf(target.role) >= 0 && target.status === 'active' && admins.length <= 1;
 
     if (request.method === 'DELETE') {
       if (target.id === me.id) return C.bad('You cannot delete your own account.');
-      if (lastAdmin) return C.bad('Keep at least one active admin.');
+      if (lastAdmin) return C.bad('Keep at least one active doctor or admin.');
       await C.updateUsers((list) => { const i = list.findIndex((x) => x.id === id); if (i >= 0) list.splice(i, 1); });
       await C.audit(me, 'Deleted account ' + target.email);
       return C.ok({ ok: true });
@@ -63,7 +63,7 @@ app.http('adminUser', {
     if (request.method !== 'PATCH') return C.bad('Not supported', 405);
     const b = await C.readJson(request);
     if (b.role && C.ROLES.indexOf(b.role) < 0) return C.bad('Unknown role');
-    if (lastAdmin && ((b.role && b.role !== 'admin') || b.status === 'disabled')) return C.bad('Keep at least one active admin.');
+    if (lastAdmin && ((b.role && C.STAFF.indexOf(b.role) < 0) || b.status === 'disabled')) return C.bad('Keep at least one active doctor or admin.');
     if (target.id === me.id && b.status === 'disabled') return C.bad('You cannot disable your own account.');
     let fresh = null; const changes = [];
     await C.updateUsers((list) => {
@@ -98,6 +98,8 @@ app.http('adminSite', {
     next.lockout = Math.max(3, Math.min(20, +next.lockout || 5));
     if (!/^#[0-9a-fA-F]{6}$/.test(next.accent)) next.accent = '#0F766E';
     if (!/^\d{4,8}$/.test(String(next.kiosk.pin))) return C.bad('Kiosk PIN must be 4 to 8 digits.');
+    next.doctorCode = String(next.doctorCode || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 24);
+    if (next.doctorCode && next.doctorCode.length < 6) return C.bad('Clinic code must be at least 6 letters or numbers.');
     await S.putDoc(C.SITE_DOC, next);
     C.clearSiteCache();
     await C.audit(me, 'Updated sign-in, login page or kiosk settings');
@@ -122,7 +124,7 @@ app.http('adminExport', {
     const me = await C.requireUser(request, ADMIN);
     const [users, clinic, site, auditLog] = await Promise.all([C.getUsers(), S.getDoc(CLINIC_DOC), C.getSite(true), S.getDoc(C.AUDIT_DOC)]);
     await C.audit(me, 'Exported all clinic data');
-    const s = Object.assign({}, site, { kiosk: Object.assign({}, site.kiosk, { pin: '••••' }) });
+    const s = Object.assign({}, site, { doctorCode: site.doctorCode ? '••••' : '', kiosk: Object.assign({}, site.kiosk, { pin: '••••' }) });
     return C.ok({ exportedAt: new Date().toISOString(), by: me.email, users: users.map(C.publicUser), site: s, clinic: clinic.data, audit: (auditLog.data || {}).items || [] });
   })
 });
